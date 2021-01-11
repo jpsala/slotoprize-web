@@ -1,0 +1,17 @@
+{
+  "web": {
+    "client_id": "231770135835-e20qspi3q51g7dc5t0ai4pkq2585p9uk.apps.googleusercontent.com",
+    "project_id": "massive-vector-257121",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "XPZjd53OEvL9HfeWFtmYmKx3",
+    "redirect_uris": [
+      "https://portal.dev.slotoprizes.tagadagames.com"
+    ],
+    "javascript_origins": [
+      "http://localhost:8080",
+      "https://portal.dev.slotoprizes.tagadagames.com"
+    ]
+  }
+}
