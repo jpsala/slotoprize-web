@@ -1,17 +1,15 @@
   <template>
     <div ref="unityContainer" id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+      <div class="colum">
+        <canvas id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
+        <div id="unity-loading-bar">
+          <div id="unity-logo"></div>
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+          </div>
         </div>
+        <q-btn ref="spinBtn" class="spin-btn spin-btn" color="primary" icon="check" label="Spin" @click="spin" />
       </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-      </div>
-      <div id="slotoprizes-spin-button"></div>
     </div>
 </template>
 
@@ -34,14 +32,16 @@ const config = {
 export default {
   setup () {
     const unityContainer = ref()
+    const spinBtn = ref()
+    let unityInstance
+    const spin = () => {
+      unityInstance.Module.asmLibraryArg._SendSpin()
+    }
     onMounted(() => {
       const container = document.querySelector('#unity-container')
       const canvas = document.querySelector('#unity-canvas')
       const loadingBar = document.querySelector('#unity-loading-bar')
       const progressBarFull = document.querySelector('#unity-progress-bar-full')
-      const fullscreenButton = document.querySelector('#unity-fullscreen-button')
-      const spinButton = document.querySelector('#slotoprizes-spin-button')
-
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = 'unity-mobile'
         config.devicePixelRatio = 1
@@ -57,14 +57,11 @@ export default {
         if (loadGame) {
           window.createUnityInstance(canvas, config, (progress) => {
             progressBarFull.style.width = 100 * progress + '%'
-          }).then((unityInstance) => {
+          }).then((_unityInstance) => {
+            unityInstance = _unityInstance
             loadingBar.style.display = 'none'
-            fullscreenButton.onclick = () => {
-              unityInstance.SetFullscreen(1)
-            }
-            spinButton.onclick = () => {
-              unityInstance.Module.asmLibraryArg._SendSpin()
-            }
+            console.log('spinBtn', spinBtn.value)
+            spinBtn.value.$el.style.display = 'block'
           }).catch((message) => {
             alert(message)
           })
@@ -73,7 +70,7 @@ export default {
       }
       document.body.appendChild(script)
     })
-    return { Screen, unityContainer }
+    return { Screen, unityContainer, spin, spinBtn }
   }
 }
 
@@ -91,5 +88,9 @@ export default {
       width: 100%;
     }
   }
+}
+.spin-btn{
+  display: none;
+  width: 100%;
 }
 </style>
