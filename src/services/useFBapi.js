@@ -1,4 +1,4 @@
-import { reactive, toRefs, watch } from '@vue/composition-api'
+import { reactive, toRefs } from '@vue/composition-api'
 
 // const appId = '945570962630854'
 // const appId = '1022679051353479'
@@ -10,9 +10,6 @@ const state = reactive({
   user: undefined,
   model: { connected: undefined },
   loggedIn: false
-})
-watch(() => state.model.connected, (loggedIn) => {
-  console.warn('user', state.user)
 })
 const handleSdkInit = async ({ FB, scope: _scope }) => {
   scope = _scope

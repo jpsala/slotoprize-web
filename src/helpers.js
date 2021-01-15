@@ -152,9 +152,7 @@ export {
   rand, notify, soloEnDevMode, handleAxiosError, elIsVisible, alerta,
   debounce, throttle, resizeObserver, confirma, whichBox
 }
-export const isNotebook = () => {
-  return location.hostname === 'localhost'
-}
+export const isNotebook = location.hostname === 'localhost'
 export const generateAtlas = async (atlasName) => {
   const { showSpinner, hideSpinner } = useGlobal()
   showSpinner()
@@ -165,4 +163,11 @@ export const generateAtlas = async (atlasName) => {
 }
 export const clone = (data) => {
   return rfdc()(data)
+}
+export const wait = async (mill) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, mill)
+  })
 }

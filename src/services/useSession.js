@@ -6,14 +6,14 @@ import { reactive, computed, watch, ref } from '@vue/composition-api'
 import useGapi from '../services/useGapi'
 import useFBapi from '../services/useFBapi'
 
-// eslint-disable-next-line no-unused-vars
-import Vue from 'vue'
 import axios from './axios'
-import { router } from '../boot/router'
+// import { router } from '../boot/router'
 import { alerta } from 'src/helpers'
 import useGlobal from '../services/useGlobal'
+import useSloto from '../services/useSloto'
 
 const { showSpinner, hideSpinner } = useGlobal()
+const { maxMultiplier } = useSloto()
 const jwtSecret = 'wopidom.portal'
 
 const state = reactive({
@@ -46,7 +46,11 @@ const isDev = computed(() => state.user && state.user.isDev === 1)
 
 let loggedInHandle = () => false
 const onLoggedInChange = (cb) => { loggedInHandle = cb }
-const setUser = (data) => { state.user = data; console.log('user', state.user) }
+
+const setDataFromEndPoint = (data) => {
+  state.user = data?.user || undefined
+  if (data?.maxMultiplier) maxMultiplier.value = data.maxMultiplier
+}
 
 const logout = async () => {
   if (googleSignedIn.value) {
@@ -56,9 +60,9 @@ const logout = async () => {
     await facebookSignOut()
   }
   setApiToken(undefined)
-  setUser(undefined)
-  router.push('/login').catch(() => {})
-  // dispatch('setHijoActivo', undefined);
+  setDataFromEndPoint(undefined)
+  window.location.reload()
+  // router.push('/login').catch(() => {})
 }
 
 const signUp = async (_user) => {
@@ -68,7 +72,7 @@ const signUp = async (_user) => {
     if (!response) throw Error('Error de conexión')
     if (response.status !== 200) return response
     setApiToken(response.headers.token)
-    setUser(response.data)
+    setDataFromEndPoint(response.data)
     return response
   } catch (error) {
     await alerta('Error trying to login', error)
@@ -82,7 +86,7 @@ const login = async (_user) => {
     if (!response) throw Error('Error de conexión')
     if (response.status !== 200) return response
     setApiToken(response.headers.token)
-    setUser(response.data)
+    setDataFromEndPoint(response.data)
     return response
   } catch (error) {
     await alerta('Error trying to login', error)
@@ -90,21 +94,20 @@ const login = async (_user) => {
 }
 
 const tryToLogin = async () => {
-  console.log('detalle', apiToken)
   if (!apiToken.value || apiToken.value === 'undefined') {
     console.log('tryToLogin, no token, returning')
     return
   }
   try {
     const response = await axios.post('/portal/auth-with-token', { token: apiToken.value })
-    setUser(response.data)
+    setDataFromEndPoint(response.data)
+    console.log('tryToLogin', response.data)
     return Boolean(response.data)
   } catch (error) {
     return false
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 const handleGoogleLogin = async (userData) => {
   if (loggedIn.value) {
     console.log('handleGoogleLogin, already logged in user:', user.value)
@@ -119,7 +122,7 @@ const handleGoogleLogin = async (userData) => {
     const response = await axios.post('/portal/google_login', userData)
     console.log('handleGoogleLogin', userData.name)
     isGoogleUser.value = true
-    setUser(response.data)
+    setDataFromEndPoint(response.data)
     setApiToken(response.headers.token)
     hideSpinner()
     return Boolean(response.data)
@@ -132,6 +135,7 @@ const handleGoogleLogin = async (userData) => {
     handlingGoogleLogin = false
   }
 }
+
 const handleFacebookLogin = async (userData) => {
   if (loggedIn.value) {
     console.log('handleFacebookLogin, already logged in user:', user.value)
@@ -146,7 +150,7 @@ const handleFacebookLogin = async (userData) => {
     const response = await axios.post('/portal/facebook_login', userData)
     console.log('handleFacebookLogin', userData.name)
     isFacebookUser.value = true
-    setUser(response.data)
+    setDataFromEndPoint(response.data)
     setApiToken(response.headers.token)
     hideSpinner()
     return Boolean(response.data)
@@ -183,11 +187,11 @@ watch(googleSignedIn, async (signedIn) => {
 watch(() => Boolean(fbLoggedIn.value), async (signedIn) => {
   console.warn('useSession: watch fbLoggedIn')
   if (!signedIn) {
-    console.warn('FB not signedIn, return')
+    console.log('FB not signedIn, return')
     return
   }
   if (fbUser.value) {
-    console.warn('facebookSignedIn: calling handleFacebookLogin')
+    console.log('facebookSignedIn: calling handleFacebookLogin')
     await handleFacebookLogin(fbUser.value)
   }
 }, { immediate: true })

@@ -39,7 +39,7 @@ module.exports = function (/* ctx */) {
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
+      // 'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
     ],
 
@@ -56,8 +56,8 @@ module.exports = function (/* ctx */) {
 
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
-      // showProgress: false,
-      // gzip: true,
+      showProgress: true,
+      gzip: true,
       // analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override

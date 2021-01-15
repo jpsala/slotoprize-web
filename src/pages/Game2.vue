@@ -49,6 +49,7 @@ export default {
         canvas.style.width = '432px'
         canvas.style.height = '768px'
       }
+      if (Screen.gt.sm) unityContainer.value.style.marginTop = '50px'
       loadingBar.style.display = 'block'
 
       const script = document.createElement('script')
@@ -65,7 +66,6 @@ export default {
           }).catch((message) => {
             alert(message)
           })
-          if (Screen.gt.sm) unityContainer.value.style.marginTop = '50px'
         }
       }
       document.body.appendChild(script)

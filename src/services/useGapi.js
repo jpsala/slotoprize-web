@@ -32,13 +32,13 @@ const initSigninV2 = async function () {
 }
 
 const signinChanged = function (_signedIn) {
-  console.log('signinChanged', _signedIn, user.value?.name)
+  console.log('userGapi: signinChanged', _signedIn, user.value?.name)
   if (signedIn.value === _signedIn) {
-    console.log('signinChanged: signedIn.value === _signedIn returning', signedIn.value === _signedIn)
+    console.log('userGapi: signinChanged: signedIn.value === _signedIn returning', signedIn.value === _signedIn)
     return
   }
   if (!_signedIn) {
-    console.log('signinChanged: Deleting user and signedIn')
+    console.log('userGapi: signinChanged: Deleting user and signedIn')
     user.value = undefined
   }
   signedIn.value = _signedIn
@@ -47,7 +47,7 @@ const signinChanged = function (_signedIn) {
 
 const userChanged = function (_user) {
   if (!auth2.isSignedIn.get()) {
-    console.log('userChanged: signed in is false, returning')
+    console.log('userGapi: userChanged: signed in is false, returning')
     return
   }
   if (_user) {
@@ -55,7 +55,7 @@ const userChanged = function (_user) {
     if (!profile) {
       console.log('maaal')
     }
-    console.log('userChanged', profile)
+    console.log('userGapi: userChanged', profile)
     user.value = {
       id: profile.getId(),
       name: profile.getName(),
@@ -64,10 +64,10 @@ const userChanged = function (_user) {
       imageUrl: profile.getImageUrl(),
       email: profile.getEmail()
     }
-    console.log('userChanged user', user.value)
-    console.log('userChanged', user.value.name, user.value.email)
+    console.log('userGapi: userChanged user', user.value)
+    console.log('userGapi: userChanged', user.value.name, user.value.email)
   } else {
-    console.log('maaal')
+    console.log('userGapi: maaal')
     user.value = undefined
   }
 }
@@ -78,7 +78,7 @@ const signIn = async function () {
 
 const signOut = async function () {
   await auth2.signOut()
-  console.log('Google: signed Out')
+  console.log('userGapi: : signed Out')
 }
 
 function loadGapiScript () {
@@ -105,7 +105,7 @@ function loadGapiScript () {
 }
 
 loadGapi().then(() => {
-  console.log('Gapi loaded and initialized')
+  console.log('userGapi: Gapi loaded and initialized')
 })
 
 const useGapi = () => {

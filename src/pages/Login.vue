@@ -70,7 +70,9 @@
               <p class="btn-text"><b>Sign in with google</b></p>
             </div>
 
-            <v-facebook-login v-model="fbModel" @sdk-init="handleSdkInit" :app-id="appId" class="q-ml-md fb-button"></v-facebook-login>
+            <v-facebook-login v-model="fbModel" @sdk-init="handleSdkInit" :app-id="appId"
+                              class="fb-button">
+            </v-facebook-login>
 
             <div v-if="!isLogin" @click="isLogin = !isLogin" class="login-div-button"><span class="text-grey-8">Already registered on Sloto Prizes? </span>Login</div>
             <div class="row">
@@ -110,7 +112,7 @@ export default {
     const { handleSdkInit, user: fbUser, model: fbModel, appId } = useFBapi()
 
     const gotoHomePage = () => {
-      ctx.root.$router.push('game').catch(() => {})
+      ctx.root.$router.push({ path: 'game' }).catch(() => {})
     }
 
     const notifyFailure = (error) => {
@@ -170,10 +172,14 @@ export default {
 </script>
 
 <style lang="scss">
-fb-button{
+.fb-button, .google-btn{
   box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
   &:hover{
     box-shadow: 0 0 4px #1976D2;
+  }
+  margin-left: 13px;
+  @media (max-width: $breakpoint-xs-max){
+    width: 80% !important;
   }
 }
 .my-card{
@@ -242,7 +248,7 @@ fb-button{
       color: $white;
       font-size: 14px;
       letter-spacing: 0.2px;
-      font-family: "Roboto";
+      font-family: "Titillium";
     }
     &:hover {
       box-shadow: 0 0 4px $google-blue;

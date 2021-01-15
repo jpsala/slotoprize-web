@@ -1,104 +1,179 @@
-<template>
-  <!-- <div class="game row q-gutter-md justify-center shadow-4 self-center"> -->
-    <q-card class="my-card">
-      <!-- <pre v-if="user && user.id">user: {{iframeSrc+'/#/game?id='+user.gameUserId}}</pre> -->
-      <!-- <pre>{{user}}</pre> -->
-      <h4 v-show="!loaded" class="loading">Loading...</h4>
-      <!-- <iframe v-show="loaded" :load="iframeLoaded()" src="https://bo.dev.slotoprizes.tagadagames.com/joke.html" frameborder="0"></iframe> -->
-      <iframe v-if="user && user.deviceId" id="iframe-id" v-show="loaded" :load="iframeLoaded()"
-              :src="`${iframeSrc}?id=${user.deviceId}&name=${user.firstName}&email=${user.email}`" frameborder="0"></iframe>
-      <q-btn ref="mySpinButton" class="spin-button" color="primary" icon="check" label="Spin"
-             @click="spinButton.click()" />
-      <q-separator />
-    </q-card>
-  <!-- </div> -->
+  <template>
+  <div class="game">
+    <div ref="unityContainer" id="unity-container" class="unity-desktop">
+      <div class="colum canvas-wraper">
+        <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
+        <canvas v-if="loadGame" id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
+        <div id="unity-loading-bar">
+          <div id="unity-logo"></div>
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+          </div>
+        </div>
+        <div ref="buttonsRow" class="row buttons-row">
+          <q-btn rounded class="multiplier-btn col bg-blue-8 text-white" :label="`X${actualMultiplier}`" @click="setMultiplier" />
+          <q-btn rounded class="spin-btn col bg-red-10 text-white" label="Spin" @click="spin"/>
+        </div>
+      </div>
+    </div>
+    <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
+    <div class="ads">
+      <div class="row">
+        <div class="col ad"><q-img src="../assets/ad1.png"/></div>
+      </div>
+      <div class="row">
+        <div class="col ad"><q-img src="../assets/ad2.png"/></div>
+      </div>
+    </div>
+  </div>
 </template>
+
 <script>
-import { reactive, toRefs, ref, onMounted } from '@vue/composition-api'
-import { whichBox } from 'src/helpers'
+
+import { onMounted, ref } from '@vue/composition-api'
+import { Screen } from 'quasar'
+import { isNotebook } from '../helpers'
+import useGlobal from '../services/useGlobal'
+import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 
 export default {
-  setup () {
-    const { user } = useSession()
-    let removeFooterInterval
-    const spinButton = ref(undefined)
-    const mySpinButton = ref(undefined)
-    const spinButtonLoaded = ref(false)
-    const { isLocal } = whichBox()
-    const state = reactive({
-      loaded: false,
-      iframeSrc: isLocal
-        // ? 'http://localhost:8888/web_build/index.html'
-        ? 'https://portal.dev.slotoprizes.tagadagames.com/web_build_params/index.html'
-        : 'https://portal.dev.slotoprizes.tagadagames.com/web_build_params/index.html'
-    })
-    const iframeLoaded = () => {
-      console.log('loaded')
-      if (state.loaded) return
-      state.loaded = true
-      if (!isLocal) {
-        removeFooterInterval = setInterval(() => removeFooter(), 1000)
-        removeFooter()
-      }
-      mySpinButton.value.$el.style.display = 'block'
+  setup (_, { root }) {
+    const { user, loggedIn } = useSession()
+    const { maxMultiplier } = useSloto()
+    const { setUnityInstance } = useGlobal()
+    const actualMultiplier = ref()
+    const buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
+    const loaderUrl = `${buildUrl}/WebGL.loader.js`
+    const config = {
+      dataUrl: `${buildUrl}/WebGL.data.gz`,
+      frameworkUrl: `${buildUrl}/WebGL.framework.js.gz`,
+      codeUrl: `${buildUrl}/WebGL.wasm.gz`,
+      streamingAssetsUrl: 'StreamingAssets',
+      companyName: 'Tagada Games',
+      productName: 'Sloto Prizes',
+      productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
     }
-    const removeFooter = () => {
-      const iframe = document.getElementById('iframe-id')
-      if (!iframe) return
-      const innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document
-      const footerEl = innerDoc.getElementById('unity-footer')
-      spinButton.value = innerDoc.querySelector('#slotoprizes-spin-button')
-      console.log('spinButton', spinButton)
-      spinButton.value.style.display = 'none'
-      console.log('spinButton', spinButton, innerDoc)
-      spinButtonLoaded.value = true
-      console.log('spinbutton', spinButton.value, spinButton.value.click)
-      if (footerEl) footerEl.style.display = 'none'
-      if (footerEl) clearInterval(removeFooterInterval)
-    }
-    onMounted(() => {
-      console.warn('myspin', mySpinButton.value.$el.style.display = 'block')
-      // mySpinButton.value.style.display = 'block'
-    })
-    return { ...toRefs(state), iframeLoaded, isLocal, user, spinButton, mySpinButton }
-  }
+    const loadGame = ref(true)
+    const unityContainer = ref()
+    const progress = ref(0)
+    const buttonsRow = ref()
+    let unityInstance
 
+    if (isNotebook) loadGame.value = true
+
+    const setMultiplier = () => {
+      unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
+      actualMultiplier.value = (actualMultiplier.value === maxMultiplier.value) ? 1 : actualMultiplier.value + 1
+    }
+
+    const spin = () => {
+      unityInstance.Module.asmLibraryArg._SendSpin()
+    }
+
+    const loadUnityInstance = () => {
+      const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
+            `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
+      window.history.pushState({ path: newurl }, '', newurl)
+      const canvas = document.querySelector('#unity-canvas')
+
+      const script = document.createElement('script')
+
+      if (loadGame.value) {
+        script.src = `${loaderUrl}?id=${user.value.deviceId}`
+        script.onload = () => {
+          window.createUnityInstance(canvas, config, (_progress) => {
+            console.log('progress.value', progress.value)
+            progress.value = Number(_progress)
+          }).then((_unityInstance) => {
+            unityInstance = _unityInstance
+            actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
+            setUnityInstance(_unityInstance)
+            buttonsRow.value.style.display = 'flex'
+          }).catch((message) => {
+            alert(message)
+          })
+        }
+        document.body.appendChild(script)
+      }
+    }
+
+    // watch(() => loggedIn.value, (loggedIn) => {
+    //   if (!unityInstance && loggedIn) {
+    //     console.warn('game watch loggedIn loadUnityInstance()')
+    //     loadUnityInstance()
+    //   }
+    // }, { inmediate: true })
+
+    onMounted(() => {
+      if (!unityInstance && loggedIn.value) {
+        console.warn('game onMounted loggedIn loadUnityInstance()')
+        loadUnityInstance()
+      }
+    })
+
+    return {
+      Screen,
+      unityContainer,
+      spin,
+      loadGame,
+      progress,
+      buttonsRow,
+      setMultiplier,
+      actualMultiplier
+    }
+  }
 }
+
 </script>
-<style>
-  #page-container{
-    height: 99.3vh;
-    width: 100vw;
-  }
-</style>
-<style lang="scss" scoped>
-  .spin-button{
-    // position: absolute;
-    // top: 589px;
-    // left: 516px;
-    width: 114px;
-    height: 42px;
-    display: none;
-    width: 100%;
-  }
-  .q-card{
-    background-color: white;
-    width: 100%;
-    height: 100%;
+<style lang="scss">
+.game{
+  background-color: #F3F4F9;
+  .ads{
+    padding-top: 30px;
+    width: 800px;
+    @media (max-width: $breakpoint-xs-max){
+      width: 100%;
+    }
     margin: auto;
+    .ad{
+      margin: auto;
+      width: 1024px !important;
+      max-width: 90vw !important;
+    }
+  }
+  #unity-container{
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    .canvas-wraper{
+        flex-grow: 1;
+      #unity-canvas{
+        height: 500px;;
+        width: 100%;
+          .canvas-xs{
+            width: 100%;
+          }
+        }
+      }
   }
-  .game{
-    width: 100%;
-    height: 100%;
+  .buttons-row{
+    justify-content: center;
+    margin: auto;
+    display: none;
+    .spin-btn, .multiplier-btn{
+      margin-top: 10px;
+    }
+    .multiplier-btn{
+      max-width: 110px;
+      margin-right: 20px;
+      @media (max-width: $breakpoint-xs-max){
+        width: 100%;
+        margin-right: 10px;
+      }
+    }
+    .spin-btn{
+      max-width: 220px;
+    }
   }
-  iframe{
-    zoom: 0.5!important;
-    align-self: center;
-    margin:auto;
-    width: 90%;
-    height: 95%;
-  }
+}
 </style>
