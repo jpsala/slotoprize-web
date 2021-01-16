@@ -5,11 +5,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import VueCompositionApi from '@vue/composition-api'
-
-Vue.use(VueCompositionApi)
-
+console.warn('app.vue')
+import './services/composition-api'
 export default {
   name: 'App'
 }
