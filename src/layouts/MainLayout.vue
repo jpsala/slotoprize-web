@@ -68,6 +68,7 @@
 </template>
 
 <script>
+
 import { ref, onBeforeMount, watch } from '@vue/composition-api'
 import { RemoveArrow } from 'app/src/components/RemoveArrowDirective'
 import drawerContent from 'app/src/components/DrawerContent'
@@ -94,7 +95,6 @@ function setItemsDefaults (items, level = 0) {
   return items
 }
 const iconDir = ref('90')
-
 export default {
   directives: { RemoveArrow },
   components: { drawerContent, VFacebookLogin },
@@ -103,7 +103,6 @@ export default {
     const { handleSdkInit, user: fbUser, model: fbModel, appId } = useFBapi()
     const { loading, isDevEnv, utcDate, getUnityInstance } = useGlobal()
     const { user: googleUser, signedIn: googleSignedIn, signOut: googleSignOut } = useGapi()
-    console.log('detalle', `../assets/icons/${iconDir.value}/profileIcon.png`)
     const items = ref([])
     const unityInstance = ref(undefined)
     const callInUnityInstance = (menuIdx) => {
@@ -118,7 +117,6 @@ export default {
       sessionLogout()
     }
     onBeforeMount(async () => {
-      console.log('MainLayout on before mount')
       try {
         const isLoggedIn = await tryToLogin()
         if (!isLoggedIn) {
@@ -177,7 +175,6 @@ export default {
     watch(
       () => Screen.name,
       (gt) => {
-        console.log('gt', gt)
         if (gt === 'xs') iconDir.value = '75'
         else if (gt === 'xl') iconDir.value = '100'
         else iconDir.value = '90'

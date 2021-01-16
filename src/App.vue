@@ -5,7 +5,7 @@
 </template>
 
 <script>
-console.warn('app.vue')
+
 import './services/composition-api'
 export default {
   name: 'App'
