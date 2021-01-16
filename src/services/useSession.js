@@ -2,6 +2,7 @@
 231770135835-e20qspi3q51g7dc5t0ai4pkq2585p9uk.apps.googleusercontent.com
 XPZjd53OEvL9HfeWFtmYmKx3
 */
+import activationToken from '../services/checkActivation'
 import { reactive, computed, watch, ref } from '@vue/composition-api'
 import useGapi from '../services/useGapi'
 import useFBapi from '../services/useFBapi'
@@ -94,8 +95,20 @@ const login = async (_user) => {
 }
 
 const tryToLogin = async () => {
-  if (!apiToken.value || apiToken.value === 'undefined') {
+  if (!activationToken && (!apiToken.value || apiToken.value === 'undefined')) {
     console.log('tryToLogin, no token, returning')
+  }
+  if (activationToken) {
+    try {
+      const response = await axios.post('/portal/activation', { token: activationToken })
+      setDataFromEndPoint(response.data)
+      console.log('activation', response.data)
+      return Boolean(response.data)
+    } catch (error) {
+      return false
+    }
+  } else if (!apiToken.value || apiToken.value === 'undefined') {
+    console.log('activation, no token, returning')
     return
   }
   try {
