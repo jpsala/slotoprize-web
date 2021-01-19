@@ -33,29 +33,40 @@
 
 import { onMounted, ref } from '@vue/composition-api'
 import { Screen } from 'quasar'
-import { isNotebook } from '../helpers'
+import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
 // import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 
+console.log('whichBox', whichBox)
 export default {
   setup (_, { root }) {
     const { user, loggedIn } = useSession()
     // const { maxMultiplier } = useSloto()
+    const { isDev, isLocal } = whichBox()
     const { setUnityInstance, loadingText } = useGlobal()
+
     loadingText.value = true
+
     const actualMultiplier = ref()
-    const buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
-    const loaderUrl = `${buildUrl}/WebGL.loader.js`
+
+    let buildUrl
+    if (isLocal) buildUrl = 'http://localhost:8888/api'
+    else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_live/Build'
+    else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
+
+    const fileName = 'web_build_live'
+    const loaderUrl = `${buildUrl}/${fileName}.loader.js`
     const config = {
-      dataUrl: `${buildUrl}/WebGL.data.gz`,
-      frameworkUrl: `${buildUrl}/WebGL.framework.js.gz`,
-      codeUrl: `${buildUrl}/WebGL.wasm.gz`,
+      dataUrl: `${buildUrl}/${fileName}.data.gz`,
+      frameworkUrl: `${buildUrl}/${fileName}.framework.js.gz`,
+      codeUrl: `${buildUrl}/${fileName}.wasm.gz`,
       streamingAssetsUrl: 'StreamingAssets',
       companyName: 'Tagada Games',
       productName: 'Sloto Prizes',
       productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
     }
+
     const loadGame = ref(true)
     const unityContainer = ref()
     const progress = ref(0)

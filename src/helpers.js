@@ -6,7 +6,7 @@ import rfdc from 'rfdc'
 function whichBox () {
   const isLocal = document.location.hostname === 'localhost'
   const hostname = document.location.hostname
-  const devBoxes = ['portal.dev.slotoprizes.tagadagames.com', 'dev.slotoprizes.tagadagames.com', 'slotoprizes.fr', 'localhost', 'bo.dev.slotoprizes.tagadagames.com']
+  const devBoxes = ['portal.dev.slotoprizes.tagadagames.com', 'dev.slotoprizes.tagadagames.com', 'localhost', 'bo.dev.slotoprizes.tagadagames.com']
   const isDev = devBoxes.includes(hostname)
   // @TODO Ver que es este "isLocal"
   return { isDev, isLocal }
