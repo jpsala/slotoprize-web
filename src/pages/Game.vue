@@ -35,13 +35,13 @@ import { onMounted, ref } from '@vue/composition-api'
 import { Screen } from 'quasar'
 import { isNotebook } from '../helpers'
 import useGlobal from '../services/useGlobal'
-import useSloto from '../services/useSloto'
+// import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 
 export default {
   setup (_, { root }) {
     const { user, loggedIn } = useSession()
-    const { maxMultiplier } = useSloto()
+    // const { maxMultiplier } = useSloto()
     const { setUnityInstance, loadingText } = useGlobal()
     loadingText.value = true
     const actualMultiplier = ref()
@@ -66,7 +66,9 @@ export default {
 
     const setMultiplier = () => {
       unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
-      actualMultiplier.value = (actualMultiplier.value === maxMultiplier.value) ? 1 : actualMultiplier.value + 1
+      const actualGameMultiplier = unityInstance.Module.asmLibraryArg._GetMultiplier()
+      actualMultiplier.value = actualGameMultiplier
+      // actualMultiplier.value = (actualMultiplier.value === maxMultiplier.value) ? 1 : actualMultiplier.value + 1
     }
 
     const spin = () => {
@@ -94,7 +96,7 @@ export default {
             buttonsRow.value.style.display = 'flex'
             setTimeout(() => {
               loadingText.value = false
-            }, 5000)
+            }, 3000)
           }).catch((message) => {
             alert(message)
           })

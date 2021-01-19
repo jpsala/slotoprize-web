@@ -141,7 +141,7 @@ export default {
     const onSubmit = async () => {
       try {
         const loginData = await login(user.value)
-        if (loginData.status && loginData.status === 200) gotoHomePage()
+        if (loginData?.status && loginData?.status === 200) gotoHomePage()
         else { notifyFailure(`error status: ${loginData?.status || loginData}`) }
       } catch (error) {
         console.error('onsubmit', error)
