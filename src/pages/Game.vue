@@ -1,5 +1,6 @@
   <template>
   <div class="game">
+    <loading3 />
     <div ref="unityContainer" id="unity-container" class="unity-desktop">
       <div class="colum canvas-wraper">
         <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
@@ -41,7 +42,8 @@ export default {
   setup (_, { root }) {
     const { user, loggedIn } = useSession()
     const { maxMultiplier } = useSloto()
-    const { setUnityInstance } = useGlobal()
+    const { setUnityInstance, loadingText } = useGlobal()
+    loadingText.value = true
     const actualMultiplier = ref()
     const buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
     const loaderUrl = `${buildUrl}/WebGL.loader.js`
@@ -90,6 +92,9 @@ export default {
             actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
             setUnityInstance(_unityInstance)
             buttonsRow.value.style.display = 'flex'
+            setTimeout(() => {
+              loadingText.value = false
+            }, 5000)
           }).catch((message) => {
             alert(message)
           })

@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.8.2",
     "fb-sdk-wrapper": "^1.1.0",
+    "particles.js": "^2.0.0",
     "quasar": "^1.15.0",
     "rfdc": "^1.1.4",
     "vue-facebook-login-component": "^3.0.0",

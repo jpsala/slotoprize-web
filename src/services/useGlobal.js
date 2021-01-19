@@ -45,6 +45,16 @@ const loading = computed(() => {
 const isDevEnv = computed(() => {
   return state.isDevEnv
 })
+const _loadingText = ref(false)
+const loadingText = computed({
+  get: () => {
+    return _loadingText.value
+  },
+  set: (value) => {
+    console.log('set', value)
+    _loadingText.value = value
+  }
+})
 watch(() => state.spinner, (value) => {
   if (value) Loading.show({ spinner: QSpinnerDots })
   else Loading.hide()
@@ -59,7 +69,8 @@ const useGlobal = () => {
     hideSpinner,
     isDevEnv,
     setUnityInstance,
-    getUnityInstance
+    getUnityInstance,
+    loadingText
   }
 }
 export default useGlobal
