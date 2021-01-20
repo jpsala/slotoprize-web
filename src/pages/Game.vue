@@ -51,22 +51,24 @@ export default {
     const actualMultiplier = ref()
 
     let buildUrl
-    if (isLocal) buildUrl = 'http://localhost:8888/api'
-    else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_live/Build'
-    else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
+    if (isLocal) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
+    else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
+    else buildUrl = 'https://portal.slotoprizes.tagadagames.com/web_build_live/Build/'
+    // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
 
-    const fileName = 'web_build_live'
+    const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
     const loaderUrl = `${buildUrl}/${fileName}.loader.js`
+    const gz = (isLocal || isDev)
     const config = {
-      dataUrl: `${buildUrl}/${fileName}.data.gz`,
-      frameworkUrl: `${buildUrl}/${fileName}.framework.js.gz`,
-      codeUrl: `${buildUrl}/${fileName}.wasm.gz`,
+      dataUrl: `${buildUrl}/${fileName}.data${gz ? '.gz' : ''}`,
+      frameworkUrl: `${buildUrl}/${fileName}.framework.js${gz ? '.gz' : ''}`,
+      codeUrl: `${buildUrl}/${fileName}.wasm${gz ? '.gz' : ''}`,
       streamingAssetsUrl: 'StreamingAssets',
       companyName: 'Tagada Games',
       productName: 'Sloto Prizes',
       productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
     }
-
+    console.log('unity config', config)
     const loadGame = ref(true)
     const unityContainer = ref()
     const progress = ref(0)
@@ -95,7 +97,7 @@ export default {
       const script = document.createElement('script')
 
       if (loadGame.value) {
-        script.src = `${loaderUrl}?id=${user.value.deviceId}`
+        script.src = loaderUrl
         script.onload = () => {
           window.createUnityInstance(canvas, config, (_progress) => {
             console.log('progress.value', progress.value)
