@@ -53,10 +53,11 @@ export default {
     let buildUrl
     if (isLocal) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
     else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
-    else buildUrl = 'https://portal.slotoprizes.tagadagames.com/web_build_live/Build/'
+    else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
+    // else buildUrl = 'https://portal.slotoprizes.tagadagames.com/web_build_live/Build/'
     // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
 
-    const fileName = (isLocal || isDev) ? 'WebGL' : 'webbuildlive'
+    const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
     const loaderUrl = `${buildUrl}/${fileName}.loader.js`
     const gz = true
     // const gz = (isLocal || isDev)
