@@ -47,13 +47,13 @@ export default {
     const actualMultiplier = ref()
 
     let buildUrl
-    if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
+    if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_params/Build'
     else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
     else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
     // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
     // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
 
-    const fileName = (isLocal || isDev) ? 'web_build_live' : 'web_build_live'
+    const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
     const loaderUrl = `${buildUrl}/${fileName}.loader.js`
     const gz = true
     // const gz = (isLocal || isDev)
