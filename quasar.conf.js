@@ -120,9 +120,9 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'Wopi Portal',
-        short_name: 'Wopi Portal',
-        description: 'Wopi Portal',
+        name: 'Sloto Prizes',
+        short_name: 'Sloto Prizes',
+        description: 'Sloto Prizes',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

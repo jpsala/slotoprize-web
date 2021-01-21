@@ -19,12 +19,7 @@
     </div>
     <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
     <div class="ads">
-      <div class="row">
-        <div class="col ad"><q-img src="../assets/ad1.png"/></div>
-      </div>
-      <div class="row">
-        <div class="col ad"><q-img src="../assets/ad2.png"/></div>
-      </div>
+      <div v-show="loggedIn" id="taboola-below-article-thumbnails"></div>
     </div>
   </div>
 </template>
@@ -37,6 +32,7 @@ import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
 // import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
+import taboolaInit from '../services/taboola'
 
 console.log('whichBox', whichBox)
 export default {
@@ -51,13 +47,13 @@ export default {
     const actualMultiplier = ref()
 
     let buildUrl
-    if (isLocal) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
+    if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
     else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
-    else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
-    // else buildUrl = 'https://portal.slotoprizes.tagadagames.com/web_build_live/Build/'
+    else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
+    // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
     // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
 
-    const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
+    const fileName = (isLocal || isDev) ? 'web_build_live' : 'web_build_live'
     const loaderUrl = `${buildUrl}/${fileName}.loader.js`
     const gz = true
     // const gz = (isLocal || isDev)
@@ -109,6 +105,12 @@ export default {
             actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
             setUnityInstance(_unityInstance)
             buttonsRow.value.style.display = 'flex'
+            // Scroll Handling
+            // document.addEventListener('wheel', onScroll, false)
+            // document.addEventListener('mousemove', onMouse, false)
+            // const content = document.getElementById('unity-container')
+            // function onMouse () { content.style['pointer-events'] = 'auto' }
+            // function onScroll () { content.style['pointer-events'] = 'none' }
             setTimeout(() => {
               loadingText.value = false
             }, 3000)
@@ -128,6 +130,7 @@ export default {
     // }, { inmediate: true })
 
     onMounted(() => {
+      taboolaInit()
       if (!unityInstance && loggedIn.value) {
         console.warn('game onMounted loggedIn loadUnityInstance()')
         loadUnityInstance()
@@ -142,7 +145,8 @@ export default {
       progress,
       buttonsRow,
       setMultiplier,
-      actualMultiplier
+      actualMultiplier,
+      loggedIn
     }
   }
 }
@@ -152,17 +156,20 @@ export default {
 .game{
   background-color: #F3F4F9;
   .ads{
-    padding-top: 30px;
-    width: 800px;
+    padding: 30px 20px 0 20p;
+    width: 1280px;
+    @media (max-width: $breakpoint-xl-max){
+      padding: 10px 10px 0 10px;
+      width: 1680px;
+    }
+    @media (max-width: $breakpoint-md-max){
+      width: 90%;
+    }
     @media (max-width: $breakpoint-xs-max){
+      padding: 10px 10px 0 10px;
       width: 100%;
     }
     margin: auto;
-    .ad{
-      margin: auto;
-      width: 1024px !important;
-      max-width: 90vw !important;
-    }
   }
   #unity-container{
     display: flex;

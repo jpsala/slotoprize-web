@@ -1,8 +1,8 @@
 {
   "name": "wopi.portal",
   "version": "0.0.1",
-  "description": "Wopi Portal",
-  "productName": "Wopi Portal",
+  "description": "Sloto Prizes",
+  "productName": "Sloto Prizes",
   "author": "JP <jpsala@gmail.com>",
   "private": true,
   "scripts": {
