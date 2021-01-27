@@ -1,7 +1,6 @@
   <template>
   <div class="game">
     <loading3 v-if="loadGame"/>
-    <Profile :user="user" v-if="user && actualMenu === 'profile'" />
     <div v-show="actualMenu === 'game'" ref="unityContainer" id="unity-container" class="unity-desktop">
       <div class="colum canvas-wraper">
         <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
@@ -34,10 +33,7 @@ import useGlobal from '../services/useGlobal'
 import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 import taboolaInit from '../services/taboola'
-import Profile from 'components/Profile'
-console.log('whichBox', whichBox)
 export default {
-  components: { Profile },
   setup (_, { root }) {
     const { user, loggedIn } = useSession()
     const { actualMenu } = useSloto()
@@ -128,7 +124,6 @@ export default {
     onMounted(() => {
       taboolaInit()
       if (!unityInstance && loggedIn.value) {
-        console.warn('game onMounted loggedIn loadUnityInstance()')
         loadUnityInstance()
       }
     })

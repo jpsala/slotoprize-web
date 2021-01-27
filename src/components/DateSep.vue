@@ -1,5 +1,6 @@
 <template>
   <div class="date-sep">
+    <span class="date-sep-label" v-if="label">{{label}}</span>
     <q-select dense outlined class="day" v-model="day" :options="days"/>
     <q-select dense outlined class="month" v-model="month" :options="months"/>
     <q-select dense outlined class="year" v-model="year" :options="years"/>
@@ -13,7 +14,8 @@ export default {
     date: {
       default: new Date(),
       type: [Date, String]
-    }
+    },
+    label: undefined
   },
   setup (props, { emit }) {
     const state = reactive({
@@ -36,13 +38,10 @@ export default {
     state.day = _date.getDate()
     state.month = state.months[_date.getMonth()]
     state.year = _date.getFullYear()
-    console.log('date', _date)
     watch([() => state.day, () => state.month, () => state.year], () => {
       const month = state.months.findIndex(val => val === state.month)
-      console.log('date', state.year, state.month, state.day, state.months, month)
       const date = new Date(state.year, month, state.day)
       emit('change', date)
-      console.log('date', date, state.year, month, state.day)
     })
     return { ...toRefs(state) }
   }
@@ -55,6 +54,10 @@ export default {
   padding-top: 24px;
   padding-bottom: 8px;
   display: flex;
+  .date-sep-label{
+    align-self: center;
+    margin-right: 5px;
+  }
   .q-select{
     display: inline-block;
   }

@@ -55,7 +55,6 @@ const userChanged = function (_user) {
     if (!profile) {
       console.log('maaal')
     }
-    console.log('userGapi: userChanged', profile)
     user.value = {
       id: profile.getId(),
       name: profile.getName(),
@@ -64,8 +63,6 @@ const userChanged = function (_user) {
       imageUrl: profile.getImageUrl(),
       email: profile.getEmail()
     }
-    console.log('userGapi: userChanged user', user.value)
-    console.log('userGapi: userChanged', user.value.name, user.value.email)
   } else {
     console.log('userGapi: maaal')
     user.value = undefined

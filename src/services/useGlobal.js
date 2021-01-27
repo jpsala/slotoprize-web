@@ -51,7 +51,6 @@ const loadingText = computed({
     return _loadingText.value
   },
   set: (value) => {
-    console.log('set', value)
     _loadingText.value = value
   }
 })

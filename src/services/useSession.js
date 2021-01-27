@@ -95,14 +95,10 @@ const login = async (_user) => {
 }
 
 const tryToLogin = async () => {
-  if (!activationToken && (!apiToken.value || apiToken.value === 'undefined')) {
-    console.log('tryToLogin, no token, returning')
-  }
   if (activationToken) {
     try {
       const response = await axios.post('/portal/activation', { token: activationToken })
       setDataFromEndPoint(response.data)
-      console.log('activation', response.data)
       return Boolean(response.data)
     } catch (error) {
       return false
@@ -114,7 +110,6 @@ const tryToLogin = async () => {
   try {
     const response = await axios.post('/portal/auth-with-token', { token: apiToken.value })
     setDataFromEndPoint(response.data)
-    console.log('tryToLogin', response.data)
     return Boolean(response.data)
   } catch (error) {
     return false
@@ -123,7 +118,6 @@ const tryToLogin = async () => {
 
 const handleGoogleLogin = async (userData) => {
   if (loggedIn.value) {
-    console.log('handleGoogleLogin, already logged in user:', user.value)
     return
   }
   try {
@@ -133,7 +127,6 @@ const handleGoogleLogin = async (userData) => {
     isGoogleUser.value = false
     showSpinner()
     const response = await axios.post('/portal/google_login', userData)
-    console.log('handleGoogleLogin', userData.name)
     isGoogleUser.value = true
     setDataFromEndPoint(response.data)
     setApiToken(response.headers.token)
@@ -161,7 +154,6 @@ const handleFacebookLogin = async (userData) => {
     isFacebookUser.value = false
     showSpinner()
     const response = await axios.post('/portal/facebook_login', userData)
-    console.log('handleFacebookLogin', userData.name)
     isFacebookUser.value = true
     setDataFromEndPoint(response.data)
     setApiToken(response.headers.token)
@@ -192,13 +184,11 @@ watch(googleSignedIn, async (signedIn) => {
     return
   }
   if (googleUser.value) {
-    console.log('googleSignedIn: calling handleGoogleLogin')
     await handleGoogleLogin(googleUser.value)
   }
 })
 
 watch(() => Boolean(fbLoggedIn.value), async (signedIn) => {
-  console.warn('useSession: watch fbLoggedIn')
   if (!signedIn) {
     console.log('FB not signedIn, return')
     return

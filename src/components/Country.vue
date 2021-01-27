@@ -12,7 +12,7 @@
         style="width: 250px"
         option-label="name"
         option-value="code"
-        hint="With hide-selected and fill-input"
+        hint="Type the first letters of the country"
         @input="valChanged"
       >
         <template v-slot:no-option>

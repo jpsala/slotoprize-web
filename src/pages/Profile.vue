@@ -55,12 +55,12 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md">
           <!-- <q-input class="q-gutter-md" v-model="data.zipCode" label="Postal Code" /> -->
-          <date-sep :date="data.birthDate" @change="(value)=>{data.birthDate = value}"/>
+          <date-sep class="q-gutter-md" label="Birth date" :date="data.birthDate" @change="(value)=>{data.birthDate = value}"/>
           <q-input class="q-gutter-md" type="tel" v-model="data.phoneNumber" label="Phone Number" />
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md">
           <!-- <q-input class="q-gutter-md" v-model="data.country" label="Country" /> -->
-          <country :country="country" @change="countryChanged" />
+          <country class="q-gutter-md" :country="country" @change="countryChanged" />
           <q-input class="q-gutter-md" v-model="data.city" label="City" />
         </div>
       </div>
@@ -97,30 +97,27 @@ export default {
   setup () {
     const { user, loggedIn } = useSession()
     const submit = async () => {
-      const response = await axios.post('/portal/portal_profile', state.data)
-      console.log('submit resp', response)
+      await axios.post('/portal/portal_profile', state.data)
+      notify({ message: 'Profile saved' })
       actualMenu.value = 'game'
     }
     async function changeEmail () {
-      const response = await axios.post('/portal/portal_email', {
+      await axios.post('/portal/portal_email', {
         id: state.data.id,
         email: state.email
       })
       notify({ message: 'Email changed' })
-      console.log('resp', response)
       state.data.email = state.email
       state.emailExpansion = false
     }
     async function changePassword () {
-      console.log('password', state.password)
       state.data.password = state.password
       state.passwordExpansion = false
-      const response = await axios.post('/portal/portal_password', {
+      await axios.post('/portal/portal_password', {
         id: state.data.id,
         password: state.password
       })
       notify({ message: 'Password changed' })
-      console.log('resp', response)
       state.password2 = ''
     }
     function validPassword () {
@@ -129,14 +126,12 @@ export default {
       return true
     }
     function countryChanged (val) {
-      console.log('countryChanged', val)
       state.country = val
       state.data.country = val.name
       return true
     }
     onMounted(async () => {
       if (!loggedIn.value) return
-      console.log('detalle', loggedIn, JSON.stringify(user.value, null, 2))
       const response = await axios.get(`/portal/portal_profile?id=${user.value.id}`)
       state.data = response.data
       state.email = state.data.email
@@ -160,6 +155,9 @@ export default {
         margin-right: 10px;
       }
     }
+  }
+  .date-sep{
+    // margin-left: 35px;
   }
 }
 </style>

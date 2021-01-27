@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-use-before-define */
-import { onMounted, onUnmounted, onBeforeMount, reactive, toRefs } from '@vue/composition-api'
+import { onMounted, onUnmounted, onBeforeMount, reactive, toRefs, ref } from '@vue/composition-api'
 import { throttle } from '../helpers'
 
 const Screen = reactive(
@@ -13,15 +13,7 @@ const Screen = reactive(
     lg: false,
     xl: false,
     width: 0 })
-const setScreenValues = (data) => {
-  console.log('data', data)
-  if (!data) {
-    return
-  }
-  let target = data
-  if (data.target) {
-    target = data.target
-  }
+const setScreenValues = (target) => {
   Screen.X = target.ScreenX
   Screen.Y = target.ScreenY
   Screen.width = target.innerWidth
@@ -90,19 +82,29 @@ const setScreenValues = (data) => {
     Screen.gt.lg = true
     Screen.gt.xl = false
   }
-  console.log('width', Screen.width)
 }
 export default () => {
   let windowResize
+  const resize = ref(() => {})
   // const screen = computed(() => Screen, { deep: true })
   onBeforeMount(() => setScreenValues(window))
   onMounted(() => {
-    windowResize = (e) => setScreenValues(e.target)
+    windowResize = (e) => {
+      let data = e.target
+      if (!data) {
+        return
+      }
+      if (data.target) {
+        data = data.target
+      }
+      setScreenValues(data)
+      resize.value(data)
+    }
     setScreenValues(window)
     window.addEventListener('resize', throttle(windowResize, 500))
   })
   onUnmounted(() => {
     window.removeEventListener('resize', throttle(windowResize, 500))
   })
-  return { ...toRefs(Screen) }
+  return { ...toRefs(Screen), resize }
 }
