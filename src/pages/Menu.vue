@@ -1,0 +1,81 @@
+.<template>
+  <div id="menu" class="shadow-8">
+    <div class="header">
+      <span class="title">{{title}}</span>
+    </div>
+    <div class="content">
+      <router-view />
+    </div>
+  </div>
+</template>
+<script>
+import { onMounted, reactive, toRefs } from '@vue/composition-api'
+export default {
+  setup (_, { root }) {
+    const state = reactive({
+      title: null
+    })
+    onMounted(() => {
+      console.log('router', root.$route)
+      if (root.$route.path === '/menu/profile') state.title = 'My Profile'
+      if (root.$route.path === '/menu/winners') state.title = 'They won on Primolotto'
+    })
+    return { ...toRefs(state) }
+  }
+}
+</script>
+<style lang="scss">
+#menu{
+  /* background-color: #fff; */
+    width: 100%;
+    position: relative;
+  .header{
+    position: relative;
+    height: 210px;
+    margin: 5px auto;
+    background-color: #384CAD;
+    .title{
+      font-size: 3rem;
+      font-weight: bolder;
+      position: absolute;
+      top: calc(35% - 10px);
+      left: calc(10%);
+      color: white;
+      margin: auto
+    }
+  }
+  .content{
+    position: absolute;
+    width: 1110px;
+    max-width: 90%;
+    background-color: white;
+    padding: 40px;
+    // min-height: 800px;
+    top: 85%;
+    left: 50%;
+    z-index: 1;
+    border-radius: 8px;
+    transform: translatex(-50%);
+    @media (max-width: $breakpoint-sm-max){
+      width:720px;
+    }
+    @media (max-width: 750px){
+      width:540px;
+    }
+    @media (max-width: $breakpoint-sm-max){
+      width:98vw;
+    }
+    .footer{
+      margin-top: 50px;
+      .buttons{
+        margin-top: 40px;
+        display: flex;
+        justify-content: flex-end;
+        .q-btn{
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+</style>
