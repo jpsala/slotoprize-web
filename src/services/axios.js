@@ -43,7 +43,7 @@ const getAxios = () => {
       startLoading()
       if (!apiToken) apiToken = getApiToken()
       // console.log('config.url', config.url, config.headers)
-      // if (config.url !== '/auth') config.headers.token = apiToken
+      if (config.url !== '/auth') config.headers.token = apiToken
       // if (config.url !== '/auth/local') console.log('/auth/local')
       return config
     },

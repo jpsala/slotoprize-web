@@ -1,7 +1,8 @@
   <template>
   <div class="game">
-    <loading3 />
-    <div ref="unityContainer" id="unity-container" class="unity-desktop">
+    <loading3 v-if="loadGame"/>
+    <Profile :user="user" v-if="user && actualMenu === 'profile'" />
+    <div v-show="actualMenu === 'game'" ref="unityContainer" id="unity-container" class="unity-desktop">
       <div class="colum canvas-wraper">
         <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
         <canvas v-if="loadGame" id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
@@ -30,15 +31,16 @@ import { onMounted, ref } from '@vue/composition-api'
 import { Screen } from 'quasar'
 import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
-// import useSloto from '../services/useSloto'
+import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 import taboolaInit from '../services/taboola'
-
+import Profile from 'components/Profile'
 console.log('whichBox', whichBox)
 export default {
+  components: { Profile },
   setup (_, { root }) {
     const { user, loggedIn } = useSession()
-    // const { maxMultiplier } = useSloto()
+    const { actualMenu } = useSloto()
     const { isDev, isLocal } = whichBox()
     const { setUnityInstance, loadingText } = useGlobal()
 
@@ -66,14 +68,13 @@ export default {
       productName: 'Sloto Prizes',
       productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
     }
-    console.log('unity config', config)
     const loadGame = ref(true)
     const unityContainer = ref()
     const progress = ref(0)
     const buttonsRow = ref()
     let unityInstance
 
-    if (isNotebook) loadGame.value = true
+    if (isNotebook) loadGame.value = false
 
     const setMultiplier = () => {
       unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
@@ -87,14 +88,13 @@ export default {
     }
 
     const loadUnityInstance = () => {
-      const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
-            `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
-      window.history.pushState({ path: newurl }, '', newurl)
-      const canvas = document.querySelector('#unity-canvas')
-
-      const script = document.createElement('script')
-
       if (loadGame.value) {
+        const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
+            `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
+        window.history.pushState({ path: newurl }, '', newurl)
+        const canvas = document.querySelector('#unity-canvas')
+
+        const script = document.createElement('script')
         script.src = loaderUrl
         script.onload = () => {
           window.createUnityInstance(canvas, config, (_progress) => {
@@ -105,12 +105,8 @@ export default {
             actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
             setUnityInstance(_unityInstance)
             buttonsRow.value.style.display = 'flex'
-            // Scroll Handling
-            // document.addEventListener('wheel', onScroll, false)
-            // document.addEventListener('mousemove', onMouse, false)
-            // const content = document.getElementById('unity-container')
-            // function onMouse () { content.style['pointer-events'] = 'auto' }
-            // function onScroll () { content.style['pointer-events'] = 'none' }
+            const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
+            window.history.pushState({ path: newurl }, '', newurl)
             setTimeout(() => {
               loadingText.value = false
             }, 3000)
@@ -146,7 +142,9 @@ export default {
       buttonsRow,
       setMultiplier,
       actualMultiplier,
-      loggedIn
+      loggedIn,
+      actualMenu,
+      user
     }
   }
 }
@@ -156,6 +154,7 @@ export default {
 .game{
   background-color: #F3F4F9;
   .ads{
+    display: none;
     padding: 30px 20px 0 20p;
     width: 1280px;
     @media (max-width: $breakpoint-xl-max){

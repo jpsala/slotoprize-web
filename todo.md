@@ -16,3 +16,4 @@
 - [x] wwww
 - [x] title slotoprizes
 - [x] logo icono pagina
+- [x] taboola

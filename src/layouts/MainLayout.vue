@@ -123,7 +123,7 @@ export default {
           router.push('login').catch(() => {})
           return
         }
-        router.push({ path: 'game', params: { id: '123' } }).catch(() => {})
+        router.push({ path: '/game', params: { id: '123' } }).catch(() => {})
       } catch (error) {
         console.log('error!!! trying to login in app.vue', error)
       }
@@ -131,9 +131,19 @@ export default {
     const setItems = () => {
       items.value = setItemsDefaults([
         {
+          label: 'To play',
+          img: require(`../assets/icons/${iconDir.value}/profileIcon.png`),
+          to: '/game'
+        },
+        {
           label: 'Mon profil',
           img: require(`../assets/icons/${iconDir.value}/profileIcon.png`),
-          exec: () => { callInUnityInstance(0) }
+          to: '/menu/profile'
+        },
+        {
+          label: 'Winners',
+          img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
+          to: '/winners'
         },
         {
           label: 'Obtenez des tickets!',
@@ -209,15 +219,21 @@ export default {
     font-family: "Titillium Web", 'sans-serif'
   }
   .q-header {
-    height: 100px;
+    // height: 100px;
     background-color: white;
     @media (max-width: $breakpoint-xs-max){
       height: 50px;
     }
   }
+  .q-page-container{
+    background-color: #F3F4F9 !important;
+  }
+  .q-layout{
+    background-color: #F3F4F9;
+  }
   .q-toolbar{
     height: 100%;
-    padding: 30px;
+    // padding: 30px;
     @media (max-width: $breakpoint-xs-max){
       padding: unset;
       padding-left: 5px;
