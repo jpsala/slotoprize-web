@@ -138,12 +138,7 @@ export default {
         {
           label: 'Mon profil',
           img: require(`../assets/icons/${iconDir.value}/profileIcon.png`),
-          to: '/menu/profile'
-        },
-        {
-          label: 'Winners',
-          img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
-          to: '/winners'
+          to: '/game/profile'
         },
         {
           label: 'Obtenez des tickets!',
@@ -168,7 +163,7 @@ export default {
         {
           label: 'Gagnants',
           img: require(`../assets/icons/${iconDir.value}/winnerIcon.png`),
-          exec: () => { callInUnityInstance(5) }
+          to: '/game/winners'
         },
         {
           label: 'Configuration',

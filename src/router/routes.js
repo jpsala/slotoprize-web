@@ -15,7 +15,15 @@ const routes = [
     children: [
       { path: '', component: Index },
       { path: 'login', component: Login },
-      { path: 'game', component: Game },
+      {
+        path: 'game',
+        component: Game,
+        children: [
+          // { path: '', component: Game },
+          { path: 'profile', component: Profile },
+          { path: 'winners', component: Winners }
+        ]
+      },
       { path: 'winners', component: Winners },
       {
         path: '/menu',

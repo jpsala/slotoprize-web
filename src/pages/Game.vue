@@ -1,7 +1,7 @@
   <template>
   <div class="game">
-    <loading3 v-if="loadGame"/>
-    <div v-show="actualMenu === 'game'" ref="unityContainer" id="unity-container" class="unity-desktop">
+    <loading3 v-show="loadGame && isGameRoute"/>
+    <div v-show="isGameRoute" ref="unityContainer" id="unity-container" class="unity-desktop">
       <div class="colum canvas-wraper">
         <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
         <canvas v-if="loadGame" id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
@@ -16,8 +16,12 @@
           <q-btn rounded class="spin-btn col bg-red-10 text-white" label="Spin" @click="spin"/>
         </div>
       </div>
+      <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
     </div>
-    <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
+
+   <div v-show="!isGameRoute" class="content">
+      <router-view />
+    </div>
     <div class="ads">
       <div v-show="loggedIn" id="taboola-below-article-thumbnails"></div>
     </div>
@@ -26,101 +30,102 @@
 
 <script>
 
-import { onMounted, ref } from '@vue/composition-api'
+import { onMounted, ref, computed } from '@vue/composition-api'
 import { Screen } from 'quasar'
 import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
 import useSloto from '../services/useSloto'
 import useSession from '../services/useSession'
 import taboolaInit from '../services/taboola'
+const { user, loggedIn } = useSession()
+const { actualMenu } = useSloto()
+const { isDev, isLocal } = whichBox()
+const { setUnityInstance, loadingText } = useGlobal()
+console.warn('esto está muy mal')
+loadingText.value = true
+
+const actualMultiplier = ref()
+
+let buildUrl
+if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_params/Build'
+else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
+else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
+// else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
+// else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
+
+const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
+const loaderUrl = `${buildUrl}/${fileName}.loader.js`
+const gz = true
+// const gz = (isLocal || isDev)
+const config = {
+  dataUrl: `${buildUrl}/${fileName}.data${gz ? '.gz' : ''}`,
+  frameworkUrl: `${buildUrl}/${fileName}.framework.js${gz ? '.gz' : ''}`,
+  codeUrl: `${buildUrl}/${fileName}.wasm${gz ? '.gz' : ''}`,
+  streamingAssetsUrl: 'StreamingAssets',
+  companyName: 'Tagada Games',
+  productName: 'Sloto Prizes',
+  productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
+}
+const loadGame = ref(true)
+const unityContainer = ref()
+const progress = ref(0)
+const buttonsRow = ref()
+let unityInstance
+
+if (isNotebook) loadGame.value = true
+
+const setMultiplier = () => {
+  unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
+  const actualGameMultiplier = unityInstance.Module.asmLibraryArg._GetMultiplier()
+  actualMultiplier.value = actualGameMultiplier
+  // actualMultiplier.value = (actualMultiplier.value === maxMultiplier.value) ? 1 : actualMultiplier.value + 1
+}
+
+const spin = () => {
+  unityInstance.Module.asmLibraryArg._SendSpin()
+}
+
+const loadUnityInstance = () => {
+  if (loadGame.value) {
+    const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
+            `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
+    window.history.pushState({ path: newurl }, '', newurl)
+    const canvas = document.querySelector('#unity-canvas')
+
+    const script = document.createElement('script')
+    script.src = loaderUrl
+    script.onload = () => {
+      window.createUnityInstance(canvas, config, (_progress) => {
+        console.log('progress.value', progress.value)
+        progress.value = Number(_progress)
+      }).then((_unityInstance) => {
+        unityInstance = _unityInstance
+        actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
+        setUnityInstance(_unityInstance)
+        buttonsRow.value.style.display = 'flex'
+        setTimeout(() => {
+          loadingText.value = false
+          const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
+          window.history.pushState({ path: newurl }, '', newurl)
+        }, 3000)
+      }).catch((message) => {
+        alert(message)
+      })
+    }
+    document.body.appendChild(script)
+  }
+}
+
+// watch(() => loggedIn.value, (loggedIn) => {
+//   if (!unityInstance && loggedIn) {
+//     console.warn('game watch loggedIn loadUnityInstance()')
+//     loadUnityInstance()
+//   }
+// }, { inmediate: true })
+
 export default {
   setup (_, { root }) {
-    const { user, loggedIn } = useSession()
-    const { actualMenu } = useSloto()
-    const { isDev, isLocal } = whichBox()
-    const { setUnityInstance, loadingText } = useGlobal()
-
-    loadingText.value = true
-
-    const actualMultiplier = ref()
-
-    let buildUrl
-    if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_params/Build'
-    else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
-    else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
-    // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
-    // else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
-
-    const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
-    const loaderUrl = `${buildUrl}/${fileName}.loader.js`
-    const gz = true
-    // const gz = (isLocal || isDev)
-    const config = {
-      dataUrl: `${buildUrl}/${fileName}.data${gz ? '.gz' : ''}`,
-      frameworkUrl: `${buildUrl}/${fileName}.framework.js${gz ? '.gz' : ''}`,
-      codeUrl: `${buildUrl}/${fileName}.wasm${gz ? '.gz' : ''}`,
-      streamingAssetsUrl: 'StreamingAssets',
-      companyName: 'Tagada Games',
-      productName: 'Sloto Prizes',
-      productVersion: '1.3.2Dev - 6/1/2021 2:42:54 p. m. UTC.'
-    }
-    const loadGame = ref(true)
-    const unityContainer = ref()
-    const progress = ref(0)
-    const buttonsRow = ref()
-    let unityInstance
-
-    if (isNotebook) loadGame.value = false
-
-    const setMultiplier = () => {
-      unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
-      const actualGameMultiplier = unityInstance.Module.asmLibraryArg._GetMultiplier()
-      actualMultiplier.value = actualGameMultiplier
-      // actualMultiplier.value = (actualMultiplier.value === maxMultiplier.value) ? 1 : actualMultiplier.value + 1
-    }
-
-    const spin = () => {
-      unityInstance.Module.asmLibraryArg._SendSpin()
-    }
-
-    const loadUnityInstance = () => {
-      if (loadGame.value) {
-        const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
-            `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
-        window.history.pushState({ path: newurl }, '', newurl)
-        const canvas = document.querySelector('#unity-canvas')
-
-        const script = document.createElement('script')
-        script.src = loaderUrl
-        script.onload = () => {
-          window.createUnityInstance(canvas, config, (_progress) => {
-            console.log('progress.value', progress.value)
-            progress.value = Number(_progress)
-          }).then((_unityInstance) => {
-            unityInstance = _unityInstance
-            actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
-            setUnityInstance(_unityInstance)
-            buttonsRow.value.style.display = 'flex'
-            const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
-            window.history.pushState({ path: newurl }, '', newurl)
-            setTimeout(() => {
-              loadingText.value = false
-            }, 3000)
-          }).catch((message) => {
-            alert(message)
-          })
-        }
-        document.body.appendChild(script)
-      }
-    }
-
-    // watch(() => loggedIn.value, (loggedIn) => {
-    //   if (!unityInstance && loggedIn) {
-    //     console.warn('game watch loggedIn loadUnityInstance()')
-    //     loadUnityInstance()
-    //   }
-    // }, { inmediate: true })
-
+    const isGameRoute = computed(() => root.$route.path === '/game')
     onMounted(() => {
       taboolaInit()
       if (!unityInstance && loggedIn.value) {
@@ -139,7 +144,8 @@ export default {
       actualMultiplier,
       loggedIn,
       actualMenu,
-      user
+      user,
+      isGameRoute
     }
   }
 }
