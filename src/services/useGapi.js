@@ -15,8 +15,8 @@ const loadGapi = async () => {
 
 const initSigninV2 = async function () {
   gapi.auth2.init({
-    client_id: '231770135835-e20qspi3q51g7dc5t0ai4pkq2585p9uk.apps.googleusercontent.com',
-    // client_id: '1061068102804-lel298q90msfbdl286d6dg6kufe40ehc.apps.googleusercontent.com',
+    // client_id: '231770135835-e20qspi3q51g7dc5t0ai4pkq2585p9uk.apps.googleusercontent.com',
+    client_id: '1061068102804-lel298q90msfbdl286d6dg6kufe40ehc.apps.googleusercontent.com',
     scope: 'profile'
   })
 

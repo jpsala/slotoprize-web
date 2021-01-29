@@ -17,3 +17,11 @@
 - [x] title slotoprizes
 - [x] logo icono pagina
 - [x] taboola
+
+
+- [x] cuando hace click en el logo vuelve a home
+- [x] profile horizontal scroll
+- [x] winners mas parecido a primoloto mas ang, mas larg y tipo mas grande, centrado vertial los textos
+
+- [ ] Mensajes de conexion
+        Impossible de se connecter

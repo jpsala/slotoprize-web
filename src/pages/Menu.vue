@@ -34,6 +34,7 @@ export default {
     height: 210px;
     margin: 5px auto;
     background-color: #384CAD;
+    @media (max-width: $breakpoint-xs-max){ height: 110px;}
     .title{
       font-size: 3rem;
       font-weight: bolder;
@@ -41,7 +42,8 @@ export default {
       top: calc(35% - 10px);
       left: calc(10%);
       color: white;
-      margin: auto
+      margin: auto;
+      @media (max-width: $breakpoint-xs-max){ font-size: 2rem; top: calc(15% - 10px)}
     }
   }
   .content{
@@ -58,6 +60,7 @@ export default {
     transform: translatex(-50%);
     @media (max-width: $breakpoint-sm-max){
       width:720px;
+      padding: 0;
     }
     @media (max-width: 750px){
       width:540px;

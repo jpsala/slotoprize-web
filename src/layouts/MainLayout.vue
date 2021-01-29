@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" style="min-height: 0px">
 
     <q-ajax-bar size="2px" />
 
@@ -9,7 +9,7 @@
 
         <q-toolbar-title class="q-ml-xs" style="margin-top: 0px">
         <div class="layout-logo-wrapper">
-          <img src="../assets/logo.png" class="layout-logo" />
+          <img src="../assets/logo.png" @click="$router.push('/game')" class="layout-logo" />
         </div>
 
         </q-toolbar-title>
@@ -60,7 +60,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container id="page-container">
+    <q-page-container id="page-container" style="min-height: 0px">
       <router-view />
     </q-page-container>
     <v-facebook-login v-show="false" v-model="fbModel" @sdk-init="handleSdkInit" :app-id="appId" class="fb-button"></v-facebook-login>
@@ -123,7 +123,7 @@ export default {
           router.push('login').catch(() => {})
           return
         }
-        router.push({ path: '/game', params: { id: '123' } }).catch(() => {})
+        router.push('/game').catch(() => {})
       } catch (error) {
         console.log('error!!! trying to login in app.vue', error)
       }
@@ -132,7 +132,7 @@ export default {
       items.value = setItemsDefaults([
         {
           label: 'To play',
-          img: require(`../assets/icons/${iconDir.value}/profileIcon.png`),
+          img: require(`../assets/icons/${iconDir.value}/tombolaIcon.png`),
           to: '/game'
         },
         {
@@ -221,10 +221,10 @@ export default {
     }
   }
   .q-page-container{
-    background-color: #F3F4F9 !important;
+    // background-color: #F3F4F9 !important;
   }
   .q-layout{
-    background-color: #F3F4F9;
+    // background-color: #F3F4F9;
   }
   .q-toolbar{
     height: 100%;

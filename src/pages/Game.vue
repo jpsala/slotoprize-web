@@ -1,9 +1,11 @@
-  <template>
+<template>
   <div class="game">
+
     <loading3 v-show="loadGame && isGameRoute"/>
+
     <div v-show="isGameRoute" ref="unityContainer" id="unity-container" class="unity-desktop">
       <div class="colum canvas-wraper">
-        <div v-if="!loadGame"><q-img src="../assets/game_replace.png"/></div>
+        <div v-if="!loadGame"><q-img width="100vw" src="../assets/game_replace.png"/></div>
         <canvas v-if="loadGame" id="unity-canvas" :class="Screen.name === 'xs' ? 'canvas-xs':''"></canvas>
         <div id="unity-loading-bar">
           <div id="unity-logo"></div>
@@ -19,18 +21,20 @@
       <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
     </div>
 
-   <div v-show="!isGameRoute" class="content">
+    <div v-show="!isGameRoute" class="content">
       <router-view />
     </div>
-    <div class="ads">
-      <div v-show="loggedIn" id="taboola-below-article-thumbnails"></div>
+
+    <div v-show="loggedIn && isGameRoute" class="ads">
+      <div id="taboola-below-article-thumbnails"></div>
     </div>
+
   </div>
 </template>
 
 <script>
 
-import { onMounted, ref, computed } from '@vue/composition-api'
+import { onMounted, ref, computed, watch } from '@vue/composition-api'
 import { Screen } from 'quasar'
 import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
@@ -41,7 +45,6 @@ const { user, loggedIn } = useSession()
 const { actualMenu } = useSloto()
 const { isDev, isLocal } = whichBox()
 const { setUnityInstance, loadingText } = useGlobal()
-console.warn('esto está muy mal')
 loadingText.value = true
 
 const actualMultiplier = ref()
@@ -50,17 +53,14 @@ let buildUrl
 if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_params/Build'
 else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
 else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
-// else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
-// else buildUrl = 'https://assets.slotoprizes.tagadagames.com/web_build_live/Build'
 
-const fileName = (isLocal || isDev) ? 'WebGL' : 'web_build_live'
+const fileName = (isLocal || isDev) ? 'WebGL' : 'WebGL'
 const loaderUrl = `${buildUrl}/${fileName}.loader.js`
-const gz = true
-// const gz = (isLocal || isDev)
+
 const config = {
-  dataUrl: `${buildUrl}/${fileName}.data${gz ? '.gz' : ''}`,
-  frameworkUrl: `${buildUrl}/${fileName}.framework.js${gz ? '.gz' : ''}`,
-  codeUrl: `${buildUrl}/${fileName}.wasm${gz ? '.gz' : ''}`,
+  dataUrl: `${buildUrl}/${fileName}.data.gz`,
+  frameworkUrl: `${buildUrl}/${fileName}.framework.js.gz`,
+  codeUrl: `${buildUrl}/${fileName}.wasm.gz`,
   streamingAssetsUrl: 'StreamingAssets',
   companyName: 'Tagada Games',
   productName: 'Sloto Prizes',
@@ -86,42 +86,43 @@ const spin = () => {
 }
 
 const loadUnityInstance = () => {
-  if (loadGame.value) {
-    const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
+  if (!loadGame.value) return
+
+  const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname +
             `?id=${user.value.deviceId}&email=${user.value.email}&name=${user.value.name}`
-    window.history.pushState({ path: newurl }, '', newurl)
-    const canvas = document.querySelector('#unity-canvas')
+  window.history.pushState({ path: newurl }, '', newurl)
+  const canvas = document.querySelector('#unity-canvas')
 
-    const script = document.createElement('script')
-    script.src = loaderUrl
-    script.onload = () => {
-      window.createUnityInstance(canvas, config, (_progress) => {
-        console.log('progress.value', progress.value)
-        progress.value = Number(_progress)
-      }).then((_unityInstance) => {
-        unityInstance = _unityInstance
-        actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
-        setUnityInstance(_unityInstance)
-        buttonsRow.value.style.display = 'flex'
-        setTimeout(() => {
-          loadingText.value = false
-          const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
-          window.history.pushState({ path: newurl }, '', newurl)
-        }, 3000)
-      }).catch((message) => {
-        alert(message)
-      })
-    }
-    document.body.appendChild(script)
+  const script = document.createElement('script')
+  script.src = loaderUrl
+  console.log('script.src', loaderUrl)
+  script.onload = () => {
+    console.log('onload')
+    window.createUnityInstance(canvas, config, (_progress) => {
+      console.log('progress.value', progress.value)
+      progress.value = Number(_progress)
+    }).then((_unityInstance) => {
+      unityInstance = _unityInstance
+      actualMultiplier.value = unityInstance.Module.asmLibraryArg._GetMultiplier()
+      setUnityInstance(_unityInstance)
+      buttonsRow.value.style.display = 'flex'
+      setTimeout(() => {
+        loadingText.value = false
+        const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
+        window.history.pushState({ path: newurl }, '', newurl)
+      }, 3000)
+    }).catch((message) => {
+      alert(message)
+    })
   }
+  document.body.appendChild(script)
 }
-
-// watch(() => loggedIn.value, (loggedIn) => {
-//   if (!unityInstance && loggedIn) {
-//     console.warn('game watch loggedIn loadUnityInstance()')
-//     loadUnityInstance()
-//   }
-// }, { inmediate: true })
+watch(() => loggedIn.value, (loggedIn) => {
+  if (!unityInstance && loggedIn) {
+    console.warn('game watch loggedIn loadUnityInstance()')
+    loadUnityInstance()
+  }
+}, { inmediate: true })
 
 export default {
   setup (_, { root }) {
@@ -153,9 +154,9 @@ export default {
 </script>
 <style lang="scss">
 .game{
-  background-color: #F3F4F9;
+  // background-color: #F3F4F9;
   .ads{
-    display: none;
+    // display: none;
     padding: 30px 20px 0 20p;
     width: 1280px;
     @media (max-width: $breakpoint-xl-max){

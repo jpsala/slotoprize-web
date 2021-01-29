@@ -6,7 +6,7 @@
     <div class="content">
     <div v-if="data" id="profile">
 
-        <h6>Complete your profile to be sure to receive your earnings</h6>
+        <h6 class="title">Complete your profile to be sure to receive your earnings</h6>
 
         <div class="row q-mb-lg">
           <div class="col col-auto">
@@ -60,7 +60,7 @@
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md">
             <!-- <q-input class="q-gutter-md" v-model="data.zipCode" label="Postal Code" /> -->
-            <date-sep class="q-gutter-md" label="Birth date" :date="data.birthDate" @change="(value)=>{data.birthDate = value}"/>
+            <date-sep class="q-pl-md" label="Birth date" :date="data.birthDate" @change="(value)=>{data.birthDate = value}"/>
             <q-input class="q-gutter-md" type="tel" v-model="data.phoneNumber" label="Phone Number" />
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md">
@@ -152,10 +152,17 @@ export default {
 </script>
 <style lang="scss">
 #profile{
+  .title{
+    @media (max-width: $breakpoint-sm-max){
+      zoom: .8;
+      padding: 0px 40px;
+    }
+  }
   .footer{
     margin-top: 50px;
     .buttons{
       margin-top: 40px;
+      margin-bottom: 20px;
       display: flex;
       justify-content: flex-end;
       .q-btn{

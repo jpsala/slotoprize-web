@@ -62,10 +62,10 @@ export default {
     display: inline-block;
   }
   .day{
-    width: 80px;
+    width: 70px;
   }
   .month{
-    width: 110px;
+    width: 100px;
   }
   .year{
     width: 100px;

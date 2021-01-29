@@ -6,7 +6,8 @@ import { reactive, toRefs } from '@vue/composition-api'
 let scope
 
 const state = reactive({
-  appId: '760685931497688',
+  // appId: '760685931497688',
+  appId: '945570962630854',
   user: undefined,
   model: { connected: undefined },
   loggedIn: false
