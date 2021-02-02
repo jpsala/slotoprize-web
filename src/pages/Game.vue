@@ -117,6 +117,11 @@ const loadUnityInstance = () => {
         const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
         window.history.pushState({ path: newurl }, '', newurl)
       }, 3000)
+      const ads = document.querySelector('.adsbygoogle')
+      const ad = document.getElementById('google-add')
+      ad.innerHTML = ads.innerHTML
+      console.log('ads', ads)
+      ads.style.display = 'none'
       const senseWrapper = document.getElementById('mys-wrapper')
       console.log('sw', senseWrapper)
     }).catch((message) => {
@@ -150,11 +155,6 @@ export default {
       if (!unityInstance && loggedIn.value) {
         loadUnityInstance()
       }
-      const ads = document.querySelector('.adsbygoogle')
-      const ad = document.getElementById('google-add')
-      ad.innerHTML = ads.innerHTML
-      console.log('ads', ads)
-      ads.style.display = 'none'
     })
     watch(() => isGameRoute.value, (val) => {
       const originalAd = document.querySelector('.adsbygoogle')
