@@ -118,11 +118,11 @@ const loadUnityInstance = () => {
         window.history.pushState({ path: newurl }, '', newurl)
       }, 3000)
       const ads = document.querySelector('.adsbygoogle')
-      const ad = document.getElementById('google-add')
-      ad.innerHTML = ads.innerHTML
+      const target = document.getElementById('google-add')
+      target.innerHTML = ads.innerHTML
       console.log('ads', ads)
       ads.style.display = 'none'
-      ad.style.display = 'inlineBlock'
+      target.style.display = 'inlineBlock'
       const senseWrapper = document.getElementById('mys-wrapper')
       console.log('sw', senseWrapper)
     }).catch((message) => {
