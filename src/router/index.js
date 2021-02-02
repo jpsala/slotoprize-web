@@ -1,9 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+// import Ads from 'vue-google-adsense'
+
+// Vue.use(require('vue-script2'))
+
+// Vue.use(Ads.Adsense)
+// Vue.use(Ads.InArticleAdsense)
+// Vue.use(Ads.InFeedAdsense)
+// console.log('ads loaded')
 
 import routes from './routes'
 
 Vue.use(VueRouter)
+
+// Vue.use(require('vue-script2'))
 
 /*
  * If not building with SSR mode, you can

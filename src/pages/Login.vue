@@ -3,8 +3,8 @@
     <q-card class="my-card">
 
       <q-card-section>
-        <div class="text-h5">Welcome to Sloto Prizes</div>
-        <div class="text-subtitle2">Login to play</div>
+        <div class="text-h5">Bienvenue à Sloto Prizes</div>
+        <div class="text-subtitle2">Connectez-vous pour jouer</div>
       </q-card-section>
 
       <q-separator />
@@ -14,19 +14,19 @@
         <q-card-section v-if="isLogin" class="q-mt-xl q-mx-lg">
           <q-input
             v-model="user.email"
-            label="Email address *"
+            label="Adresse e-mail *"
             :filled="false"
             autofocus
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Enter your email address']"
+            :rules="[ val => val && val.length > 0 || 'Entrez votre adresse email']"
             type="email"
           />
           <q-input
             v-model="user.password"
             type="password"
-            label="Password *"
+            label="Mot de passe *"
             lazy-rules
-            :rules="[val => val !== null && val !== '' || 'Enter your Password']"
+            :rules="[val => val !== null && val !== '' || 'Tapez votre mot de passe']"
           />
         </q-card-section>
 
@@ -34,27 +34,27 @@
           <q-input
             v-model="user.name"
             type="text"
-            label="First Name"
+            label="Prénom"
             autofocus
             lazy-rules
-            :rules="[val => val !== null && val !== '' || 'Enter your first name']"
+            :rules="[val => val !== null && val !== '' || 'Entrez votre prénom']"
           />
           <q-input
             v-model="user.email"
             label="Email *"
             :filled="false"
             lazy-rules
-            :rules="[ val => val && val.length > 0 && val.indexOf('@') >= 0 || 'Enter your Email']"
+            :rules="[ val => val && val.length > 0 && val.indexOf('@') >= 0 || 'Entrer votre Email']"
             type="email"
           />
         </q-card-section>
 
         <q-card-actions v-if="isLogin" align="right" class="q-mt-md q-mb-md q-mr-sm">
-          <q-btn label="Sign In" :disable="!user.email || !user.password" type="submit" color="primary" class="q-ml-md signin-button"/>
+          <q-btn label="Se Connecter" :disable="!user.email || !user.password" type="submit" color="primary" class="q-ml-md signin-button"/>
         </q-card-actions>
 
         <q-card-actions v-if="!isLogin" align="right" class="q-mt-md q-mb-md q-mr-sm">
-          <q-btn @click="signUp" :disable="!user.email || !user.name" label="I'M REGISTERING" color="primary" class="q-ml-md signup-button"/>
+          <q-btn @click="signUp" :disable="!user.email || !user.name" label="JE M'INSCRIS" color="primary" class="q-ml-md signup-button"/>
         </q-card-actions>
 
           <separator />
@@ -74,13 +74,17 @@
                               class="fb-button">
             </v-facebook-login>
 
-            <div v-if="!isLogin" @click="isLogin = !isLogin" class="login-div-button"><span class="text-grey-8">Already registered on Sloto Prizes? </span>Login</div>
-            <div class="row">
-              <div v-if="isLogin" class="sign-up-div-label">New to Sloto Prizes?&nbsp;</div>
-              <div v-if="isLogin" @click="isLogin = !isLogin" class="sign-up-div-button"> Register for free</div>
-            </div>
-
           </div>
+            <div v-if="!isLogin" @click="isLogin = !isLogin" class="login-div-button">
+              <span class="text-grey-8">Déjà inscrit aux Slotoprizes? </span>S'identifier
+            </div>
+            <div class="row">
+              <div @click="forgotPassword" class="forgot-password">mot de passe oublié</div>
+            </div>
+            <div class="row">
+              <div v-if="isLogin" class="sign-up-div-label">Nouveau sur Sloto Prizes?&nbsp;</div>
+              <div v-if="isLogin" @click="isLogin = !isLogin" class="sign-up-div-button"> Inscription gratuite</div>
+            </div>
 
         </q-card-actions>
 
@@ -116,24 +120,27 @@ export default {
     }
 
     const notifyFailure = (error) => {
-      console.log('error', error?.status || error)
-      ctx.root.$q.notify({
-        color: 'red-4',
-        textColor: 'white',
-        icon: 'fas fa-check-circle',
-        message: error
-        // message: error?.status || error
-      })
+      console.log('error', error)
+      // ctx.root.$q.notify({
+      //   color: 'red-4',
+      //   textColor: 'white',
+      //   icon: 'fas fa-check-circle',
+      //   message: error
+      //   // message: error?.status || error
+      // })
     }
 
     const signUp = async () => {
       try {
         const loginData = await sessionSignUp(user.value)
         if (loginData.status === 200) gotoHomePage()
-        else { notifyFailure(`error status: ${loginData.status}`) }
+        else {
+          console.log('signUp error', loginData)
+          notifyFailure(`error status: ${loginData?.status}`)
+        }
       } catch (error) {
         console.error('onsubmit', error)
-        if (error.status === 401) notifyFailure('Revise los datos (401)')
+        if (error.status === 401) notifyFailure('Examiner les données (401)')
         else notifyFailure(`error: ${error}`)
       }
     }
@@ -148,6 +155,9 @@ export default {
         if (error?.status === 401) notifyFailure('Revise los datos (401)')
         else notifyFailure(`error: ${error}`)
       }
+    }
+    const forgotPassword = async () => {
+      ctx.root.$router.push('/forgot-password')
     }
 
     watch(() => loggedIn.value, (_loggedIn) => {
@@ -165,7 +175,8 @@ export default {
       handleSdkInit,
       fbModel,
       appId,
-      fbUser
+      fbUser,
+      forgotPassword
     }
   }
 }
@@ -196,9 +207,16 @@ export default {
     background-color: $primary;
     color: white;
   }
+  .forgot-password{
+    cursor: pointer;
+    margin: 22px auto -14px auto;
+    font-size: 1rem;
+    color: $blue-7;
+    color: #1e88e5;
+  }
   .login-div-button, .sign-up-div-button{
     cursor: pointer;
-    margin: 32px auto -14px auto;
+    margin: 12px auto -24px auto;
     font-size: 1rem;
     color: $blue-7
   }

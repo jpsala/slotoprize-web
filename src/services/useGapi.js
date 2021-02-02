@@ -1,4 +1,5 @@
 import { ref } from '@vue/composition-api'
+import { alerta } from 'src/helpers'
 let auth2
 const _gapiLoaded = ref(false)
 let gapi
@@ -70,6 +71,7 @@ const userChanged = function (_user) {
 }
 
 const signIn = async function () {
+  if (!auth2) await alerta('Auth2 not loaded')
   await auth2.signIn(signinOptions)
 }
 

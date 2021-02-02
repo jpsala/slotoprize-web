@@ -1,5 +1,12 @@
 <template>
   <div class="game">
+    <div v-show="!isGameRoute" class="header">
+      <span class="title">{{title}}</span>
+      <img :src="require('../assets/logo2.png')" />
+    </div>
+    <div v-show="!isGameRoute" class="router-view">
+      <router-view />
+    </div>
 
     <loading3 v-show="loadGame && isGameRoute"/>
 
@@ -13,16 +20,13 @@
             <div id="unity-progress-bar-full"></div>
           </div>
         </div>
-        <div ref="buttonsRow" class="row buttons-row">
+        <div id="google-add"></div>
+        <div ref="buttonsRow" class="row buttons-row" style="align-items: start;">
           <q-btn rounded class="multiplier-btn col bg-blue-8 text-white" :label="`X${actualMultiplier}`" @click="setMultiplier" />
           <q-btn rounded class="spin-btn col bg-red-10 text-white" label="Spin" @click="spin"/>
         </div>
       </div>
       <q-linear-progress v-show="progress < 1" style="width:100%" stripe size="10px" :value="progress" />
-    </div>
-
-    <div v-show="!isGameRoute" class="content">
-      <router-view />
     </div>
 
     <div v-show="loggedIn && isGameRoute" class="ads">
@@ -34,7 +38,7 @@
 
 <script>
 
-import { onMounted, ref, computed, watch } from '@vue/composition-api'
+import { onMounted, ref, watch, watchEffect } from '@vue/composition-api'
 import { Screen } from 'quasar'
 import { isNotebook, whichBox } from '../helpers'
 import useGlobal from '../services/useGlobal'
@@ -45,12 +49,13 @@ const { user, loggedIn } = useSession()
 const { actualMenu } = useSloto()
 const { isDev, isLocal } = whichBox()
 const { setUnityInstance, loadingText } = useGlobal()
+// import { loadAdSenseScript } from '../services/adsbygoogle'
 loadingText.value = true
 
 const actualMultiplier = ref()
 
 let buildUrl
-if (isLocal) buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_params/Build'
+if (isLocal) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
 else if (isDev) buildUrl = 'https://assets.dev.slotoprizes.tagadagames.com/web_build_params/Build'
 else buildUrl = 'https://root.slotoprizes.tagadagames.com/public/assets/web_build_live/Build'
 
@@ -70,9 +75,10 @@ const loadGame = ref(true)
 const unityContainer = ref()
 const progress = ref(0)
 const buttonsRow = ref()
+const title = ref('')
 let unityInstance
 
-if (isNotebook) loadGame.value = true
+if (isNotebook) loadGame.value = false
 
 const setMultiplier = () => {
   unityInstance.Module.asmLibraryArg._SendMultiplierUpdate()
@@ -111,6 +117,8 @@ const loadUnityInstance = () => {
         const newurl = window.location.protocol + '//' + window.location.host + window.location.pathname
         window.history.pushState({ path: newurl }, '', newurl)
       }, 3000)
+      const senseWrapper = document.getElementById('mys-wrapper')
+      console.log('sw', senseWrapper)
     }).catch((message) => {
       alert(message)
     })
@@ -126,12 +134,34 @@ watch(() => loggedIn.value, (loggedIn) => {
 
 export default {
   setup (_, { root }) {
-    const isGameRoute = computed(() => root.$route.path === '/game')
-    onMounted(() => {
+    const isGameRoute = ref(false)
+    watchEffect(() => {
+      if (root.$route.path === '/game') isGameRoute.value = true
+      else isGameRoute.value = false
+      if (root.$route.path === '/game/profile') title.value = 'Mon profile'
+      if (root.$route.path === '/game/winners') title.value = 'Ils ont gagné sur slotoprizes'
+      if (root.$route.path === '/game/raffles') title.value = 'Cadeaux'
+    })
+    onMounted(async () => {
+      // const adsbygoogle = await loadAdSenseScript()
+      // const respAds = adsbygoogle.push({/*  google_ad_client: 'ca-pub-6174806814869296' */ })
+      // console.log('respAds', respAds)
       taboolaInit()
       if (!unityInstance && loggedIn.value) {
         loadUnityInstance()
       }
+      const ads = document.querySelector('.adsbygoogle')
+      const ad = document.getElementById('google-add')
+      ad.innerHTML = ads.innerHTML
+      console.log('ads', ads)
+      ads.style.display = 'none'
+    })
+    watch(() => isGameRoute.value, (val) => {
+      const originalAd = document.querySelector('.adsbygoogle')
+      const target = document.getElementById('google-add')
+      target.innerHTML = originalAd.innerHTML
+      originalAd.style.display = 'none'
+      // if (ads) ads.style.display = val ? 'block' : 'none'
     })
 
     return {
@@ -146,14 +176,75 @@ export default {
       loggedIn,
       actualMenu,
       user,
-      isGameRoute
+      isGameRoute,
+      title
     }
   }
 }
 
 </script>
 <style lang="scss">
+#google-add{
+  align-self: center;
+  margin-bottom: -9px;
+  margin-top: 12px;
+}
+.adsbygoogle{
+  position: fixed;
+  bottom: 0px;
+  left: 50%;
+  margin-left: -364px;
+  width: 728px;
+  z-index: 222;
+  // height: 207px!important;
+}
+.header {
+  position: relative;
+  height: 210px;
+  margin: 5px auto;
+  background-color: #384CAD;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: $breakpoint-xs-max){ height: 110px;}
+  .title{
+    font-size: 3rem;
+    font-weight: bolder;
+    position: absolute;
+    top: calc(35% - 10px);
+    left: calc(10%);
+    color: white;
+    margin: auto;
+    @media (max-width: $breakpoint-lg-max){ font-size: 2.2rem; top: calc(50% - 1.5rem); left: 100px}
+    @media (max-width: $breakpoint-md-max){ font-size: 2rem; top: calc(50% - 1.5rem); left: 80px}
+    @media (max-width: $breakpoint-sm-max){ font-size: 1.6rem; top: calc(50% - 1.5rem); left: 20px}
+    @media (max-width: $breakpoint-xs-max){ font-size: 1rem; top: calc(42% - 10px);left: 20px}
+  }
+  img{
+    align-self: center;
+    height:100%;
+    @media (max-width: $breakpoint-md-max){
+      // margin-right: -40px;
+      // margin-top: 45px;
+      // height: 60%;
+      // margin: auto;
+    }
+    @media (max-width: $breakpoint-sm-max){
+      // margin-right: -80px;
+      // margin-top: 10px;
+      // width: 750px;
+    }
+    @media (max-width: $breakpoint-xs-max){
+      // margin-right: -40px;
+      // margin-top: 20px;
+      // width: 300px;
+    }
+  }
+}
 .game{
+  /* background-color: #fff; */
+  width: 100%;
+  position: relative;
   // background-color: #F3F4F9;
   .ads{
     // display: none;
@@ -176,6 +267,8 @@ export default {
     display: flex;
     justify-content: center;
     .canvas-wraper{
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
       #unity-canvas{
         height: 500px;;
@@ -190,9 +283,12 @@ export default {
     justify-content: center;
     margin: auto;
     display: none;
+    width: 100%;
     .spin-btn, .multiplier-btn{
       margin-top: 10px;
+      margin: 10px;
     }
+    .spin-btn{margin-left: 15px}
     .multiplier-btn{
       max-width: 110px;
       margin-right: 20px;
@@ -206,4 +302,5 @@ export default {
     }
   }
 }
+
 </style>

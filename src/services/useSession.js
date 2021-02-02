@@ -76,7 +76,7 @@ const signUp = async (_user) => {
     setDataFromEndPoint(response.data)
     return response
   } catch (error) {
-    await alerta('Error trying to login', error)
+    await alerta('Error', error)
   }
 }
 
@@ -90,7 +90,7 @@ const login = async (_user) => {
     setDataFromEndPoint(response.data)
     return response
   } catch (error) {
-    await alerta('Error trying to login', error)
+    await alerta('Error', error)
   }
 }
 

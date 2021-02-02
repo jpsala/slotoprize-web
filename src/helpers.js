@@ -340,7 +340,7 @@ const confirma = async (title, msg) => {
       message: msg,
       persistent: true,
       cancel: {
-        label: 'Cancela'
+        label: 'Cancel'
       }
     }).onOk(() => {
       resolve(true)

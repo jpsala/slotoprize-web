@@ -1,22 +1,37 @@
 <template>
-  <div>
-    <div v-if="data" id="winners">
-        <div v-for="row in data" :key="row.id" class="winner shadow-4 row">
-          <div class="left col">
-            <div class="prize">{{row.prize}}</div>
-            <div v-show="row.player.lastName || row.player.firstName" class="user">Won by {{row.player.lastName}} {{row.player.firstName}}</div>
-            <div class="date">{{row.date}}</div>
-          </div>
-          <div class="col-auto" style="align-self: normal;">
-            <div class="separator"></div>
-          </div>
-          <div class="right col-auto">
+<div>
+    <div v-if="data" id="raffles">
+        <div v-for="row in data" :key="row.id" class="raffle shadow-4 row">
+          <div class="left col-auto">
             <q-img :src="row.textureUrl" />
+          </div>
+          <div class="right col">
+            <div class="prize">{{row.description}}</div>
+            <div class="row">
+              <div class="price-and-participations shadow-4 col-auto">
+                <div class="price">{{row.raffleNumberPrice}} Tickets</div>
+                <div class="participations">{{row.participationsPurchased > 0 ? row.participationsPurchased + ' participation' : 'No participations'}}</div>
+              </div>
+              <div class="remaining-time shadow-4 col-auto q-ml-md">
+                <div class="price">Temps restant :</div>
+                <div class="participations">{{row.participationsPurchased > 0 ? row.participationsPurchased + ' Participation' : 'No participations'}}</div>
+              </div>
+            </div>
+<!-- closingDate: (...)
+description: (...)
+id: (...)
+itemHighlight: (...)
+name: (...)
+participationsPurchased: (...)
+raffleNumberPrice: (...)
+textureUrl: (...) -->
+            <div class="date"></div>
           </div>
         </div>
     </div>
   </div>
 </template>
+
 <script>
 import useSession from '../services/useSession'
 import { reactive, toRefs, onMounted } from '@vue/composition-api'
@@ -37,7 +52,7 @@ export default {
     onMounted(async () => {
       if (!loggedIn.value) return
       console.log('detalle', loggedIn, JSON.stringify(user.value, null, 2))
-      const response = await axios.get('/portal/portal_winners')
+      const response = await axios.get(`/portal/portal_raffles?email=${user.value.email}`)
       state.data = response.data
     })
     return { ...toRefs(state) }
@@ -45,8 +60,9 @@ export default {
 }
 
 </script>
+
 <style lang="scss">
-#winners{
+#raffles{
   display: flex;
   flex-direction: column;
   padding: 30px 20px;
@@ -75,26 +91,33 @@ export default {
     background: #555;
   }
   margin: auto;
-  .winner{
+  .raffle{
     width: 100%;
     padding: 28px 18px;
     border-radius: 5px;
     margin-bottom: 20px;
-    align-items: center;
+    align-items: start;
+    .q-img{
+      width: 220px;
+      @media (max-width: $breakpoint-xs-max){max-width: 100px;}
+    }
     .left{
       padding-right: 50px;
       @media (max-width: $breakpoint-xs-max){padding-right: 10px}
-      .prize{
-        font-weight: 500;
-      }
-      .user{ margin: 10px 0 }
-      .date{margin: 10px 0; color: grey}
     }
     .right{
       justify-self: end;
-      .q-img{
-        width: 150px;
-        @media (max-width: $breakpoint-xs-max){max-width: 100px;}
+      .price-and-participations{
+        padding: 11px 23px;
+        width: 161px;
+        border-radius: 6px;
+        margin-top: 13px;
+      }
+      .remaining-time{
+        padding: 11px 23px;
+        width: 161px;
+        border-radius: 6px;
+        margin-top: 13px;
       }
     }
   }

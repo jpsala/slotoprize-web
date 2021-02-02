@@ -3011,6 +3011,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+dayjs@^1.10.4:
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.4.tgz#8e544a9b8683f61783f570980a8a80eaf54ab1e2"
+  integrity sha512-RI/Hh4kqRc1UKLOAf/T5zdMMX5DQIlDxwUe3wSyMMnEbGunnpENCdbUgM+dW7kXidZqCttBrmw7BhN4TMddkCw==
+
 de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
@@ -3911,11 +3916,6 @@ faye-websocket@~0.11.1:
   integrity sha512-D2y4bovYpzziGgbHYtGCMjlJM36vAl/y+xUyn1C+FVx8szd1E+86KwVw6XvYSzOP8iMpm1X0I4xJD+QtUb36OA==
   dependencies:
     websocket-driver ">=0.5.1"
-
-fb-sdk-wrapper@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/fb-sdk-wrapper/-/fb-sdk-wrapper-1.1.0.tgz#3b47c413aceb67dec10a5c03fa7128cd44ba5005"
-  integrity sha512-66peeFF3epjeQR5l+aaB03aF8bEI+bQf+wMq3fjnUEyQ1d6qR+Z6rGHq9bSxuu2kzEtWG+0PfU5x2SiVEcYy0w==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
@@ -6350,11 +6350,6 @@ parseurl@~1.3.2, parseurl@~1.3.3:
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.3.tgz#9da19e7bee8d12dff0513ed5b76957793bc2e8d4"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
-particles.js@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/particles.js/-/particles.js-2.0.0.tgz#21386c4328d6c7f96780a201e96eedfc09c736f6"
-  integrity sha1-IThsQyjWx/lngKIB6W7t/AnHNvY=
-
 pascal-case@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/pascal-case/-/pascal-case-3.1.2.tgz#b48e0ef2b98e205e7c1dae747d0b1508237660eb"
@@ -8689,16 +8684,6 @@ vue-facebook-login-component@^3.0.0:
   resolved "https://registry.yarnpkg.com/vue-facebook-login-component/-/vue-facebook-login-component-3.0.0.tgz#c89ea3484614938b8539a5a3a5a5280bd5c0b62b"
   integrity sha512-0Al7nqaoEb3LUoNvJ4OfBZ/ynYNkvmaUuylF7JM/c+GtYiwib8arRw5ukRyvgMwldkliHAQA18StkqSkllLgSg==
 
-vue-gapi@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/vue-gapi/-/vue-gapi-1.0.0.tgz#bb3526f31fb7fef6da2e3181729c35658517cca9"
-  integrity sha512-FFFwVYxMTevrKH1DkycuKIg5vtF35uECk5UdcwXpciHudI153+v/ZS8i1l7z0jY3+JogBMMWLLh0C5SkRWlvAw==
-
-vue-google-signin-button-directive@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/vue-google-signin-button-directive/-/vue-google-signin-button-directive-1.0.3.tgz#5d4fb188e85be05596647cb3d719bda457c7f21d"
-  integrity sha512-S2gG+Zu+E+B/IoyXfbz/AixVrvZhnXU+G83bTtzhUAO9RaMg597G3XUpZOHHdgWBc/Szys/kHSbPXlONjR4wjQ==
-
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
@@ -8714,11 +8699,6 @@ vue-loader@15.9.5:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
-
-vue-plugin-load-script@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/vue-plugin-load-script/-/vue-plugin-load-script-1.3.2.tgz#348515d261205bb76d5b9285968e7e53539bbdb6"
-  integrity sha512-UQcFanuWBf72/339LxgsPZbMsT5LKUjBzkQfV3xf4ni5fc6Nnx5GNYclODFaQ9FHtOjWhu423bhHrlBHz4MIFg==
 
 vue-router@3.2.0:
   version "3.2.0"

@@ -1,7 +1,7 @@
 <template>
   <div class="row flex-center text-center">
     <q-separator class="col" />
-    <span class="col separator-span">Or</span>
+    <span class="col separator-span">Ou</span>
     <q-separator class="col" />
   </div>
 </template>

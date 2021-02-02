@@ -5,14 +5,14 @@
         use-input
         hide-selected
         fill-input
-        label="Country"
+        label="Pays"
         :options="options"
         @filter="filterFn"
         @filter-abort="abortFilterFn"
         style="width: 250px"
         option-label="name"
         option-value="code"
-        hint="Type the first letters of the country"
+        hint=""
         @input="valChanged"
       >
         <template v-slot:no-option>

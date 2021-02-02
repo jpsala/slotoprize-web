@@ -29,23 +29,6 @@ export default {
   /* background-color: #fff; */
     width: 100%;
     position: relative;
-  .header{
-    position: relative;
-    height: 210px;
-    margin: 5px auto;
-    background-color: #384CAD;
-    @media (max-width: $breakpoint-xs-max){ height: 110px;}
-    .title{
-      font-size: 3rem;
-      font-weight: bolder;
-      position: absolute;
-      top: calc(35% - 10px);
-      left: calc(10%);
-      color: white;
-      margin: auto;
-      @media (max-width: $breakpoint-xs-max){ font-size: 2rem; top: calc(15% - 10px)}
-    }
-  }
   .content{
     position: absolute;
     width: 1110px;

@@ -29,8 +29,7 @@ export default {
     }
     const thisYear = (new Date()).getFullYear()
     state.days = []
-    state.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-      'August', 'September', 'October', 'November', 'December']
+    state.months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
     state.years = []
     for (let index = 1; index <= 31; index++) state.days.push(index)
 

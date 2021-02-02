@@ -8,8 +8,11 @@
       <q-toolbar class="bg-white">
 
         <q-toolbar-title class="q-ml-xs" style="margin-top: 0px">
-        <div class="layout-logo-wrapper">
-          <img src="../assets/logo.png" @click="$router.push('/game')" class="layout-logo" />
+        <div class="row  logo-wrapper">
+          <div class="layout-logo-wrapper col-auto">
+            <img src="../assets/logo.png" @click="$router.push('/game')" class="layout-logo" />
+          </div>
+          <img class="col-auto by-primolotto" style="color: black" src="../assets/byPrimolotto.jpg"/>
         </div>
 
         </q-toolbar-title>
@@ -21,7 +24,7 @@
         >DevMode!</span> -->
 
         <span class="q-mr-md" style="color:blue; font-size: 110%" ><!-- UTC Date {{ utcDate }} --></span>
-        <q-btn v-if="loggedIn" dense flat round icon="menu" @click.stop="left = !left" color="grey-9" class="self-end q-mb-sm"/>
+        <q-btn v-if="loggedIn" dense flat round icon="menu" @click.stop="left = !left" color="grey-9" class="q-mb-sm"/>
 
         <q-btn v-if="$route.path !== '/login' && !loggedIn" flat class="self-end" @click="$router.push('/login')">
           <span>Ingreso/Registro</span>
@@ -31,14 +34,14 @@
         <q-spinner-tail v-show="loading" color="blue" size="2em" />
 
         <q-btn-dropdown v-if="loggedIn" id="profile-btn" ref="profileBtn" color="grey-8" flat v-remove-arrow
-                        icon="person" :label="user.firstName" class="self-end q-mb-sm btn-user">
+                        icon="person" :label="user.firstName" class="q-mb-sm btn-user">
           <q-list style="width: 180px">
             <q-item v-close-popup v-ripple clickable>
               <q-item-section side>
                 <q-icon name="exit_to_app" />
               </q-item-section>
               <q-item-section @click="logout">
-                Close Session
+                Se déconnecter
               </q-item-section>
             </q-item>
           </q-list>
@@ -79,6 +82,7 @@ import { router } from '../boot/router'
 import VFacebookLogin from 'vue-facebook-login-component'
 import useFBapi from '../services/useFBapi'
 import { Screen } from 'quasar'
+import { isNotebook } from 'src/helpers'
 
 function setItemsDefaults (items, level = 0) {
   items.forEach((e) => {
@@ -99,7 +103,7 @@ export default {
   directives: { RemoveArrow },
   components: { drawerContent, VFacebookLogin },
 
-  setup () {
+  setup (_, { root }) {
     const { handleSdkInit, user: fbUser, model: fbModel, appId } = useFBapi()
     const { loading, isDevEnv, utcDate, getUnityInstance } = useGlobal()
     const { user: googleUser, signedIn: googleSignedIn, signOut: googleSignOut } = useGapi()
@@ -108,6 +112,7 @@ export default {
     const callInUnityInstance = (menuIdx) => {
       if (!unityInstance.value) unityInstance.value = getUnityInstance()
       unityInstance.value.Module.asmLibraryArg._SendMenuItemAction(menuIdx)
+      if (root.$route.path !== '/game') root.$router.push('/game')
     }
     const left = ref(false)
     const {
@@ -120,7 +125,7 @@ export default {
       try {
         const isLoggedIn = await tryToLogin()
         if (!isLoggedIn) {
-          router.push('login').catch(() => {})
+          router.push('/login').catch(() => {})
           return
         }
         router.push('/game').catch(() => {})
@@ -131,7 +136,7 @@ export default {
     const setItems = () => {
       items.value = setItemsDefaults([
         {
-          label: 'To play',
+          label: 'Jouer',
           img: require(`../assets/icons/${iconDir.value}/tombolaIcon.png`),
           to: '/game'
         },
@@ -176,6 +181,14 @@ export default {
           exec: () => { callInUnityInstance(7) }
         }
       ])
+      if (isNotebook) {
+        items.value.push(
+          {
+            label: 'Cadeaux 2',
+            img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
+            to: '/game/raffles'
+          })
+      }
     }
     watch(
       () => Screen.name,
@@ -210,8 +223,11 @@ export default {
 </script>
 
 <style lang="scss">
+  html{
+    height: 100%; background-color: #F3F4F9
+  }
   body{
-    font-family: "Titillium Web", 'sans-serif'
+    font-family: "Titillium Web", 'sans-serif';
   }
   .q-header {
     // height: 100px;
@@ -219,12 +235,6 @@ export default {
     @media (max-width: $breakpoint-xs-max){
       height: 50px;
     }
-  }
-  .q-page-container{
-    // background-color: #F3F4F9 !important;
-  }
-  .q-layout{
-    // background-color: #F3F4F9;
   }
   .q-toolbar{
     height: 100%;
@@ -234,6 +244,13 @@ export default {
       padding-left: 5px;
       padding-right: 0;
       padding-top: 8px;
+    }
+  }
+  .logo-wrapper{
+    .by-primolotto{
+      color: black;
+      align-self: center;
+      margin-right: 0px;
     }
   }
   .layout-logo-wrapper{
