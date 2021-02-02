@@ -162,6 +162,7 @@ export default {
       const target = document.getElementById('google-add')
       target.innerHTML = originalAd.innerHTML
       originalAd.style.display = 'none'
+      originalAd.style.marginLeft = '-664px'
       // if (ads) ads.style.display = val ? 'block' : 'none'
     })
 
@@ -189,14 +190,12 @@ export default {
   align-self: center;
   margin-bottom: -9px;
   margin-top: 12px;
-  display: none !important;
 }
 .adsbygoogle{
-  display: none !important;
   position: fixed;
   bottom: 0px;
   left: 50%;
-  margin-left: -664px;
+  margin-left: -1664px;
   width: 428px;
   z-index: 222;
   // height: 207px!important;
