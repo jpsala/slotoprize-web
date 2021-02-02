@@ -122,7 +122,7 @@ const loadUnityInstance = () => {
       target.innerHTML = ads.innerHTML
       console.log('ads', ads)
       ads.style.display = 'none'
-      target.style.display = 'inlineBlock'
+      target.style.display = 'inline-block'
       const senseWrapper = document.getElementById('mys-wrapper')
       console.log('sw', senseWrapper)
     }).catch((message) => {
