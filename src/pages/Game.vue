@@ -189,10 +189,10 @@ export default {
   align-self: center;
   margin-bottom: -9px;
   margin-top: 12px;
-  display: none;
+  display: none !important;
 }
 .adsbygoogle{
-  display: none;
+  display: none !important;
   position: fixed;
   bottom: 0px;
   left: 50%;
