@@ -122,6 +122,7 @@ const loadUnityInstance = () => {
       ad.innerHTML = ads.innerHTML
       console.log('ads', ads)
       ads.style.display = 'none'
+      ad.style.display = 'inlineBlock'
       const senseWrapper = document.getElementById('mys-wrapper')
       console.log('sw', senseWrapper)
     }).catch((message) => {
@@ -188,7 +189,6 @@ export default {
   align-self: center;
   margin-bottom: -9px;
   margin-top: 12px;
-  display: inline-block;
 }
 .adsbygoogle{
   position: fixed;
