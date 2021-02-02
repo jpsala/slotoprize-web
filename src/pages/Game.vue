@@ -193,8 +193,8 @@ export default {
   position: fixed;
   bottom: 0px;
   left: 50%;
-  // margin-left: -664px;
-  // width: 428px;
+  margin-left: -664px;
+  width: 428px;
   z-index: 222;
   // height: 207px!important;
 }
