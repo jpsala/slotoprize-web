@@ -191,6 +191,7 @@ export default {
   margin-top: 12px;
 }
 .adsbygoogle{
+  display: none;
   position: fixed;
   bottom: 0px;
   left: 50%;
