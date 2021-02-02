@@ -11,8 +11,8 @@
         <div class="row  logo-wrapper">
           <div class="layout-logo-wrapper col-auto">
             <img src="../assets/logo.png" @click="$router.push('/game')" class="layout-logo" />
+            <img class="col-auto by-primolotto" style="color: black" src="../assets/byPrimolotto.jpg"/>
           </div>
-          <img class="col-auto by-primolotto" style="color: black" src="../assets/byPrimolotto.jpg"/>
         </div>
 
         </q-toolbar-title>
@@ -254,10 +254,17 @@ export default {
     }
   }
   .layout-logo-wrapper{
+    display: flex;
+    align-items: center;
     img{
       max-height: 80px;
       @media (max-width: $breakpoint-xs-max){
         height: 40px;
+      }
+      &.by-primolotto{
+        @media (max-width: $breakpoint-xs-max){
+          height: 20px;
+        }
       }
       }
     // max-width: 310px;
