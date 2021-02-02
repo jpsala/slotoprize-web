@@ -189,6 +189,7 @@ export default {
   align-self: center;
   margin-bottom: -9px;
   margin-top: 12px;
+  display: none;
 }
 .adsbygoogle{
   display: none;
