@@ -188,6 +188,7 @@ export default {
   align-self: center;
   margin-bottom: -9px;
   margin-top: 12px;
+  display: inline-block;
 }
 .adsbygoogle{
   position: fixed;
