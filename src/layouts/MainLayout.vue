@@ -153,7 +153,7 @@ export default {
         {
           label: 'Cadeaux',
           img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
-          exec: () => { callInUnityInstance(2) }
+          to: '/game/raffles'
         },
         {
           label: 'Historique tombola',
@@ -181,14 +181,14 @@ export default {
           exec: () => { callInUnityInstance(7) }
         }
       ])
-      if (isNotebook) {
-        items.value.push(
-          {
-            label: 'Cadeaux 2',
-            img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
-            to: '/game/raffles'
-          })
-      }
+      // if (isNotebook) {
+      //   items.value.push(
+      //     {
+      //       label: 'Cadeaux 2',
+      //       img: require(`../assets/icons/${iconDir.value}/giftIcon.png`),
+      //       to: '/game/raffles'
+      //     })
+      // }
     }
     watch(
       () => Screen.name,
