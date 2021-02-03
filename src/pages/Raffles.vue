@@ -10,11 +10,16 @@
             <div class="row">
               <div class="price-and-participations shadow-4 col-auto">
                 <div class="price">{{row.raffleNumberPrice}} Tickets</div>
-                <div class="participations">{{row.participationsPurchased > 0 ? row.participationsPurchased + ' participation' : 'No participations'}}</div>
+                <div class="participations">1 participation</div>
               </div>
               <div class="remaining-time shadow-4 col-auto q-ml-md">
                 <div class="price">Temps restant :</div>
                 <div class="participations">{{row.fromNow}}</div>
+              </div>
+              <div v-show="row.participationsPurchased > 0"
+                   class="remaining-time shadow-4 col-auto q-ml-md bg-green-7 text-white"
+                   style="font-size: 1.2rem">
+                <div class="price">Achetée :{{row.participationsPurchased}}</div>
               </div>
             </div>
             <q-btn style="position: absolute; bottom: 5px; right: 5px; width: 200px; font-size: 1.5rem"
