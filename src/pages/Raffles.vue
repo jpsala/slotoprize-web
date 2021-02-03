@@ -1,11 +1,11 @@
 <template>
 <div>
     <div v-if="data" id="raffles">
-        <div v-for="row in data" :key="row.id" class="raffle shadow-4 row">
+        <div v-for="row in data" :key="row.id" class="raffle shadow-4 bg-white row">
           <div class="left col-auto">
             <q-img :src="row.textureUrl" />
           </div>
-          <div class="right col">
+          <div class="right col" style="height: 100%; position: relative;">
             <div class="prize">{{row.description}}</div>
             <div class="row">
               <div class="price-and-participations shadow-4 col-auto">
@@ -14,9 +14,11 @@
               </div>
               <div class="remaining-time shadow-4 col-auto q-ml-md">
                 <div class="price">Temps restant :</div>
-                <div class="participations">{{row.participationsPurchased > 0 ? row.participationsPurchased + ' Participation' : 'No participations'}}</div>
+                <div class="participations">{{row.fromNow}}</div>
               </div>
             </div>
+            <q-btn style="position: absolute; bottom: 5px; right: 5px; width: 200px; font-size: 1.5rem"
+              rounded outline @click="buyRaffle(row)" class="bg-green-6 text-white">Je Joue!</q-btn>
 <!-- closingDate: (...)
 description: (...)
 id: (...)
@@ -34,8 +36,14 @@ textureUrl: (...) -->
 
 <script>
 import useSession from '../services/useSession'
-import { reactive, toRefs, onMounted } from '@vue/composition-api'
+import { reactive, toRefs, onMounted, onUnmounted } from '@vue/composition-api'
 import axios from '../services/axios'
+import dayjs from 'dayjs'
+import 'dayjs/locale/fr'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { alerta } from 'src/helpers'
+dayjs.extend(relativeTime)
+dayjs.locale('fr')
 
 const state = reactive({
   data: undefined,
@@ -46,16 +54,44 @@ const state = reactive({
   passwordExpansion: false,
   user: {}
 })
+let fromNowInterval
 export default {
   setup () {
     const { user, loggedIn } = useSession()
+    const buyRaffle = async (raffle) => {
+      try {
+        const resp = await axios({
+          url: '/portal/raffle_purchase',
+          method: 'get',
+          params: {
+            deviceId: user.value.deviceId,
+            raffleId: raffle.id,
+            amount: 1
+          }
+        })
+        console.log('resp', resp)
+        await alerta('Success', 'Tirage au sort acheté')
+        raffle.participationsPurchased = Number(raffle.participationsPurchased) + 1
+      } catch (err) {
+        await alerta('Error', err)
+      }
+    }
     onMounted(async () => {
       if (!loggedIn.value) return
-      console.log('detalle', loggedIn, JSON.stringify(user.value, null, 2))
       const response = await axios.get(`/portal/portal_raffles?email=${user.value.email}`)
-      state.data = response.data
+      state.data = response.data.map(row => {
+        row.fromNow = dayjs(row.closingDate).fromNow()
+        return row
+      })
+      fromNowInterval = setInterval(() => {
+        state.data = state.data.map(row => {
+          row.fromNow = dayjs(row.closingDate).fromNow()
+          return row
+        })
+      }, 1000)
     })
-    return { ...toRefs(state) }
+    onUnmounted(() => clearInterval(fromNowInterval))
+    return { ...toRefs(state), buyRaffle }
   }
 }
 
