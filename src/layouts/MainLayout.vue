@@ -82,7 +82,6 @@ import { router } from '../boot/router'
 import VFacebookLogin from 'vue-facebook-login-component'
 import useFBapi from '../services/useFBapi'
 import { Screen } from 'quasar'
-import { isNotebook } from 'src/helpers'
 
 function setItemsDefaults (items, level = 0) {
   items.forEach((e) => {
