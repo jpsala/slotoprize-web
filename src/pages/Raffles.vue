@@ -12,7 +12,7 @@
                 <div class="price">{{row.raffleNumberPrice}} Tickets</div>
                 <div class="participations">1 participation</div>
               </div>
-              <div class="remaining-time shadow-4 col-auto q-ml-md">
+              <div class="remaining-time shadow-4 col-auto">
                 <div class="price">Temps restant :</div>
                 <div class="participations">{{row.fromNow}}</div>
               </div>
@@ -22,8 +22,7 @@
                 <div class="price">Achetée :{{row.participationsPurchased}}</div>
               </div>
             </div>
-            <q-btn style="position: absolute; bottom: 5px; right: 5px; width: 200px; font-size: 1.5rem"
-              rounded outline @click="buyRaffle(row)" class="bg-green-6 text-white">Je Joue!</q-btn>
+            <q-btn rounded outline @click="buyRaffle(row)" class="bg-green-6 text-white btn-comprar">Je Joue!</q-btn>
 <!-- closingDate: (...)
 description: (...)
 id: (...)
@@ -159,7 +158,16 @@ export default {
         width: 161px;
         border-radius: 6px;
         margin-top: 13px;
+        @media (min-width: $breakpoint-sm-min){
+          margin-left: 10px;
+        }
       }
+    }
+    .btn-comprar{
+      width: 200px;
+      font-size: 1.5rem;
+      margin-top: 25px;
+      float: right;
     }
   }
   .separator{

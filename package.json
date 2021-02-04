@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.8.2",
     "dayjs": "^1.10.4",
+    "mitt": "^2.1.0",
     "quasar": "^1.15.0",
     "rfdc": "^1.1.4",
     "vue-facebook-login-component": "^3.0.0"
