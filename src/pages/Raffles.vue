@@ -23,14 +23,6 @@
               </div>
             </div>
             <q-btn rounded outline @click="buyRaffle(row)" class="bg-green-6 text-white btn-comprar">Je Joue!</q-btn>
-<!-- closingDate: (...)
-description: (...)
-id: (...)
-itemHighlight: (...)
-name: (...)
-participationsPurchased: (...)
-raffleNumberPrice: (...)
-textureUrl: (...) -->
             <div class="date"></div>
           </div>
         </div>

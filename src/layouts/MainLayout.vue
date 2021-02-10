@@ -155,6 +155,11 @@ export default {
           to: '/game/raffles'
         },
         {
+          label: 'Collectioin des cartes',
+          img: require(`../assets/icons/${iconDir.value}/cardsIcon.png`),
+          to: '/game/cards'
+        },
+        {
           label: 'Historique tombola',
           img: require(`../assets/icons/${iconDir.value}/tombolaIcon.png`),
           exec: () => { callInUnityInstance(3) }

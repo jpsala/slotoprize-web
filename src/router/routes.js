@@ -5,6 +5,7 @@ import Game from 'src/pages/Game'
 // import Menu from 'src/pages/Menu'
 import Profile from 'src/pages/Profile'
 import Winners from 'src/pages/Winners'
+import Cards from 'src/pages/Cards'
 import Raffles from 'src/pages/Raffles'
 import ForgotPassword from 'src/pages/ForgotPassword'
 
@@ -25,6 +26,7 @@ const routes = [
           // { path: '', component: Game },
           { path: 'profile', component: Profile },
           { path: 'winners', component: Winners },
+          { path: 'cards', component: Cards },
           { path: 'raffles', component: Raffles }
         ]
       }
