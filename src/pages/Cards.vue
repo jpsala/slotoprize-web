@@ -17,12 +17,12 @@
       <q-card-section>
         <div class="text-h6 card-title">{{row.title}}</div>
         <div class="text-h6 card-subtitle row card-det">
-          <div class="col">{{row.ownedQuantity}} of {{row.cards.length}}</div>
           <div class='reward-amount col'>
             <span class="reward-amount">&nbsp;{{Math.ceil(row.rewardAmount/1000)}}K</span>
             <q-img src="../assets/coinbag.png" class="coin-bag" />
           </div>
         </div>
+        <div class="col owned-cards">{{row.ownedQuantity}} of {{row.cards.length}}</div>
       </q-card-section>
 
     </q-card>
@@ -130,24 +130,23 @@ export default {
     img{
       width: 220px;
     }
+    .owned-cards{text-align: center; font-size: 1rem;}
     .card-det{
       align-items: center!important;
       justify-content: center;
       .reward-amount{
         display: flex;
-        flex-direction: column;
-        max-width: 80px;
+        flex-direction: row;
         align-items: center;
+        justify-content: center;
         .reward-amount{
           z-index: 1;
-          font-size: 2.2rem;
-          font-weight: 800;
+          font-size: 1rem;
+          font-weight: 400;
         }
         .coin-bag{
-          width: 60px;
-          margin-top: -45px;
-          opacity: .8;
-          z-index: 0;
+          margin-left: 10px;
+          width: 25px;
         }
       }
     }

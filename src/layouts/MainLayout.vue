@@ -164,11 +164,11 @@ export default {
           img: require(`../assets/icons/${iconDir.value}/tombolaIcon.png`),
           exec: () => { callInUnityInstance(3) }
         },
-        {
-          label: 'Collection des cartes',
-          img: require(`../assets/icons/${iconDir.value}/cardsIcon.png`),
-          exec: () => { callInUnityInstance(4) }
-        },
+        // {
+        //   label: 'Collection des cartes',
+        //   img: require(`../assets/icons/${iconDir.value}/cardsIcon.png`),
+        //   exec: () => { callInUnityInstance(4) }
+        // },
         {
           label: 'Gagnants',
           img: require(`../assets/icons/${iconDir.value}/winnerIcon.png`),

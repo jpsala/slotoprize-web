@@ -6,7 +6,7 @@
       <div v-if="collection.cards.length > 0" class="cards-in-component">
         <q-card v-for="row in collection.cards" :key="row.id" class="my-card" :class="row.ownedQuantity > 0 ? 'quantity':''">
           <q-img :src="row.thumbUrl">
-            <q-badge v-if="row.ownedQuantity > 0" color="orange" floating>
+            <q-badge v-if="row.ownedQuantity > 0" color="yellow-8" floating>
               {{row.ownedQuantity * row.stars}}&nbsp;<q-icon class="star" size="sm" name="star_rate" color="yellow-3"/>
             </q-badge>
           </q-img>

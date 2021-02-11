@@ -17,7 +17,7 @@
         <div class="span-uno q-mx-sm">Etoiles</div>
       </div>
       <div class="chest">
-        <q-img class="chest-img" src="../assets/chest.png" />
+        <q-img class="chest-img" src="../assets/chest-regular.png" />
         <div class="button shadow-3" @click="changeCards('regular')">
           <span class=" text-subtitle1 text-weight-bold">Echanger</span>
           <q-icon class="star" size="md" name="star_rate" color="yellow-8"/>
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="chest q-mt-lg">
-        <q-img class="chest-img" src="../assets/chest.png" />
+        <q-img class="chest-img" src="../assets/chest-premium.png" />
         <div class="button shadow-3" @click="changeCards('premium')">
           <span class=" text-subtitle1 text-weight-bold">Echanger</span>
           <q-icon class="star" size="md" name="star_rate" color="yellow-8"/>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { alerta, notify } from 'src/helpers'
+import { alerta, confirma } from 'src/helpers'
 import axios from '../services/axios'
 import useGlobal from '../services/useGlobal'
 import useSession from '../services/useSession'
@@ -60,14 +60,12 @@ export default {
         await alerta('OOOPS!', 'You don\'t have enough stars')
         return
       }
+      if (!(await confirma('Question', 'assurez-vous de changer les cartes?'))) return
       showSpinner()
-      const response = await axios.get('/portal/card_trade', {
-        params: { regular: chest === 'regular', email: user.value.email }
-      })
-      console.log('response', JSON.stringify(response, null, 2))
+      await axios.get('/portal/card_trade', { params: { regular: chest === 'regular', email: user.value.email } })
       hideSpinner()
+      await alerta('Info', 'Succès en échangeant les cartes !!!')
       emit('done')
-      notify({ message: 'woking on this' })
     }
     return { changeCards }
   }
